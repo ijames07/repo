@@ -19,13 +19,12 @@ class ProductsPresenter extends BasePresenter {
 
 	protected function startup() {
 		parent::startup();
-		if (!getUser()->isLoggedIn()) {
+		if (!$this->getUser()->isLoggedIn()) {
 			if ($this->user->logoutReason === Nette\Security\IUserStorage::INACTIVITY) {
 				$this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
 			}
 			$this->redirect('Sign:in', array('backlink' => $this->storeRequest()));
 		}
-		echo "test";
 	}
 
 	public function renderDefault() {
