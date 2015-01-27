@@ -1,0 +1,45 @@
+{**
+ * @param string   $basePath web base path
+ * @param array    $flashes  flash messages
+ *}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>{ifset #title}{include title|striptags} | {/ifset}Nette Sandbox</title>
+        <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/bootstrap.css" />
+        <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/bootstrap-theme.css" />
+        <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/custom.css" />
+        <script src="{$basePath}/js/respond.min.js"></script>
+	<link rel="shortcut icon" href="{$basePath}/favicon.ico" />
+	{block head}{/block}
+</head>
+
+<body>
+        <script> document.body.className+=' js' </script>
+        <div class="row">
+            <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="collapse">
+                    <ul class="nav navbar-nav">
+                        {include #header}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
+        {include #content}
+<!-- javascript -->
+    <script src="{$basePath}/js/jquery-1.11.1.js"></script>
+    <script src="{$basePath}/js/bootstrap.min.js"></script>
+</body>
+</html>

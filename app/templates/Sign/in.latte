@@ -1,0 +1,11 @@
+{block header}
+<li><a href="{plink Homepage:}">Domů</a></li>
+<li class="active"><a href="{plink Sign:in}">Přihlásit</a></li>
+<li><a href="{plink Register:}">Registrovat</a></li>
+{/block}
+{block content}
+<h1 n:block=title>Sign in</h1>
+
+{control signInForm}
+
+{* or use {include '../components/form.latte', form => signInForm} *}
