@@ -28,7 +28,7 @@ class ProductsPresenter extends BasePresenter {
 	}
 
 	public function renderDefault() {
-		$this->money = 0;
+		
 	}
 
 }
