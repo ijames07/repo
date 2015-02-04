@@ -12,7 +12,7 @@ class ProductsPresenter extends BasePresenter {
 
 	/** @var Model\Products */
 	private $products;
-
+	
 	public function __construct(Model\Products $products) {
 		$this->products = $products;
 	}
@@ -28,7 +28,14 @@ class ProductsPresenter extends BasePresenter {
 	}
 
 	public function renderDefault() {
-		
+		$this->template->products = $this->products->getAll()->order('$name');
 	}
-
+	
+	public function renderCategory($cat = 0) {
+		$this->template->products = $this->products->getProductsFromCategory($cat);
+	}
+	
+	public function renderProduct($id = 0) {
+		$this->template->product = $this->products->getProduct($id);
+	}
 }
