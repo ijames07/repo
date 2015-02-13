@@ -4,26 +4,26 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "76a3af11ed62a6addea4f11180a0b8f3",
+    "hash": "18a10c6a13c6a3437aad2a8be0c0040a",
     "packages": [
         {
             "name": "dg/adminer-custom",
-            "version": "v1.5.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dg/adminer-custom.git",
-                "reference": "9365952e11b2b706be94c5000bf032027557a45b"
+                "reference": "f1b449b7076d49711fdb41382e5bd858f09855d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dg/adminer-custom/zipball/9365952e11b2b706be94c5000bf032027557a45b",
-                "reference": "9365952e11b2b706be94c5000bf032027557a45b",
+                "url": "https://api.github.com/repos/dg/adminer-custom/zipball/f1b449b7076d49711fdb41382e5bd858f09855d0",
+                "reference": "f1b449b7076d49711fdb41382e5bd858f09855d0",
                 "shasum": ""
             },
             "type": "project",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Customization for the best database management tool written in PHP, Adminer",
-            "time": "2014-08-05 16:59:07"
+            "time": "2015-02-07 20:26:30"
         },
         {
             "name": "instante/bootstrap-3-renderer",
@@ -73,12 +73,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/iPublikuj/mobile-detect.git",
-                "reference": "e852d460b75e923f0a61f749582a930d074e02f2"
+                "reference": "8726ca62cd7e39323779a95a8b6e10becb84acbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/iPublikuj/mobile-detect/zipball/e852d460b75e923f0a61f749582a930d074e02f2",
-                "reference": "e852d460b75e923f0a61f749582a930d074e02f2",
+                "url": "https://api.github.com/repos/iPublikuj/mobile-detect/zipball/8726ca62cd7e39323779a95a8b6e10becb84acbe",
+                "reference": "8726ca62cd7e39323779a95a8b6e10becb84acbe",
                 "shasum": ""
             },
             "require": {
@@ -129,7 +129,7 @@
                 "nette mobile",
                 "tools"
             ],
-            "time": "2015-01-17 13:16:04"
+            "time": "2015-02-03 22:24:06"
         },
         {
             "name": "latte/latte",
@@ -1320,16 +1320,16 @@
     "packages-dev": [
         {
             "name": "nette/tester",
-            "version": "v1.3.0",
+            "version": "v1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/tester.git",
-                "reference": "73e9511cb0bd03efdba398c00e91fac8b22edde7"
+                "reference": "2ce1cd9a6d7012ba059efa08613d5cd6e50c6560"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/tester/zipball/73e9511cb0bd03efdba398c00e91fac8b22edde7",
-                "reference": "73e9511cb0bd03efdba398c00e91fac8b22edde7",
+                "url": "https://api.github.com/repos/nette/tester/zipball/2ce1cd9a6d7012ba059efa08613d5cd6e50c6560",
+                "reference": "2ce1cd9a6d7012ba059efa08613d5cd6e50c6560",
                 "shasum": ""
             },
             "require": {
@@ -1372,7 +1372,7 @@
                 "testing",
                 "unit"
             ],
-            "time": "2014-09-27 10:42:19"
+            "time": "2015-02-08 04:13:28"
         }
     ],
     "aliases": [],

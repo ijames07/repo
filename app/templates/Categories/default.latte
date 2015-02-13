@@ -1,0 +1,14 @@
+{block title}
+Kategorie
+{/block}
+{block header}
+						<li class="active"><a href="{plink Categories:}">Kategorie</a></li>
+                        <li><a href="{plink Products:}">Produkty</a></li>
+                        <li><a href="{plink Sign:out}">Odhlásit</a></li>
+{/block}
+
+{block content}
+	{foreach $categories as $category}
+		<a n:href='Products:category, $category->text'>{$category->text}</a> <br />
+	{/foreach}
+{/block}

@@ -23,5 +23,8 @@ nette:
 
 services:
 	- App\Model\UserManager
+	- App\Model\Products
+	- App\Model\Orders
+	- App\Model\Categories
 	- App\RouterFactory
 	router: @App\RouterFactory::createRouter

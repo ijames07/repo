@@ -1,0 +1,10 @@
+{layout '../@layout.latte'}
+{block title}
+{ifset $title}{$title}{else}Produkty {/ifset}
+{/block}
+{block header}
+						<li><a href="{plink Categories:}">Kategorie</a></li>
+                        <li class="active"><a href="{plink Products:}">Produkty</a></li>
+						<li><a href="{plink Orders:}">Objednávky</a></li>
+						<li><a href="{plink Sign:out}">Odhlásit</a></li>
+{/block}   

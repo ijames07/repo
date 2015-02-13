@@ -9,8 +9,7 @@
 		<div class="description">
 			{$product->description}
 		</div>
-		{$product->price |number:2}
-		<a href="{link Products:edit $product->products_id}">Úprava</a>
+		{$product->price |number:2:',':' '}
 	</div>
 {/foreach}
 </div>

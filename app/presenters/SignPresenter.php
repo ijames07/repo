@@ -35,7 +35,7 @@ class SignPresenter extends BasePresenter {
 	
 	public function actionIn() {
 		if ($this->getUser()->isLoggedIn()) {
-			$this->redirect("Products:");
+			$this->redirect("Categories:");
 		}
 	}
 

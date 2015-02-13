@@ -1,0 +1,15 @@
+{layout 'products.latte'}
+
+{block content}
+<h1>{$product->name}</h1>
+<img src="{$basePath}/images/products/{$product->products_id}.{$product->ext}" /><br/>
+<h2>Popis</h2> 
+<p>{$product->description}</p>
+<h2>Složení</h2>
+<p>{$product->ingredients}</p>
+<h2>Hodnocení</h2>
+<p>{$product->rating}</p>
+<h2>Cena</h2>
+<p>{number_format($product->price, 2,",",".")} Kč</p>
+{control orderForm}
+{/block}

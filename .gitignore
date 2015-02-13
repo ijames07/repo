@@ -10,3 +10,4 @@ nbproject/*
 !.htaccess
 !web.config
 app/config/config.local.neon
+/PhpProject1/nbproject/private/

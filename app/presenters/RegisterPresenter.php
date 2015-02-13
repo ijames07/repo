@@ -37,7 +37,7 @@ class RegisterPresenter extends BasePresenter {
 				->addRule(Form::MIN_LENGTH, 'Heslo musí mít alespoň %d znaků.', 6);
 		$form->addPassword('password2', 'Heslo znovu: *', 20)
 				->addConditionOn($form['password'], Form::VALID)
-				->addRule(Form::FILLED, 'Heslo znovu')
+				->addRule(Form::FILLED, 'Stejné heslo ještě jednou pro kontrolu')
 				->addRule(Form::EQUAL, 'Hesla se neshodují.', $form['password']);
 		$sex = array(
 			1 => 'muž',
