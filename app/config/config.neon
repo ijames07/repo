@@ -27,4 +27,4 @@ services:
 	- App\Model\Orders
 	- App\Model\Categories
 	- App\RouterFactory
-	router: @App\RouterFactory::createRouter
+#	router: @App\RouterFactory::createRouter
