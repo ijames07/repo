@@ -43,6 +43,13 @@
     <script src="{$basePath}/js/bootstrap.min.js"></script>
 	<script src="{$basePath}/js/jquery.toaster.js"></script>
 	<script>
+		$.toaster({
+			settings: {
+				timeout: 5000
+			}
+		});
+	</script>
+	<script>
 		{foreach $flashes as $flash}
 			$.toaster({ title: 'Info', priority: {$flash->type}, message: {$flash->message} });
 		{/foreach}
