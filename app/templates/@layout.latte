@@ -12,6 +12,7 @@
         <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/bootstrap.css" />
         <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/bootstrap-theme.css" />
         <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/custom.css" />
+		<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/toastr.css" />
         <script src="{$basePath}/js/respond.min.js"></script>
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,17 +42,18 @@
 <!-- javascript -->
     <script src="{$basePath}/js/jquery-1.11.1.js"></script>
     <script src="{$basePath}/js/bootstrap.min.js"></script>
-	<script src="{$basePath}/js/jquery.toaster.js"></script>
-	<script>
-		$.toaster({
-			settings: {
-				timeout: 5000
-			}
-		});
-	</script>
+	<script src="{$basePath}/js/toastr.js"></script>
 	<script>
 		{foreach $flashes as $flash}
-			$.toaster({ title: 'Info', priority: {$flash->type}, message: {$flash->message} });
+			{if $flash->type == 'info'}
+				toastr.info({$flash->message});
+			{elseif $flash->type == 'success'}
+				toastr.success({$flash->message});
+			{elseif $flash->type == 'error'}
+				toastr.error({$flash->message});
+			{else}
+				toastr.warning({$flash->message});
+			{/if}
 		{/foreach}
 	</script>
 </body>
