@@ -37,10 +37,15 @@
                 </div>
             </nav>
         </div>
-        <div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
         {include #content}
 <!-- javascript -->
     <script src="{$basePath}/js/jquery-1.11.1.js"></script>
     <script src="{$basePath}/js/bootstrap.min.js"></script>
+	<script src="{$basePath}/js/jquery.toaster.js"></script>
+	<script>
+		{foreach $flashes as $flash}
+			$.toaster({ title: 'Info', priority: {$flash->type}, message: {$flash->message} });
+		{/foreach}
+	</script>
 </body>
 </html>
