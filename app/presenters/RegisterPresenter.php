@@ -15,7 +15,7 @@ class RegisterPresenter extends BasePresenter {
 		parent::startup();
 	}
 
-	public function renderRegister() {
+	public function renderDefault() {
 		
 	}
 
@@ -26,16 +26,16 @@ class RegisterPresenter extends BasePresenter {
 				->addRule(Form::FILLED, 'Zadejte své jméno');
 		$form->addText('surname', 'Příjmení')
 				->addRule(Form::FILLED, 'Zadejte své příjmení');
-		$form->addText('email', 'E-mail: *', 35)
+		$form->addText('email', 'E-mail', 35)
 				->setEmptyValue('@')
 				->addRule(Form::FILLED, 'Zadejte svůj email')
 				->addCondition(Form::FILLED)
-				->addRule(Form::EMAIL, 'Zkontrolujte svůj zadaný email, zadaná adresa není email');
-		$form->addPassword('password', 'Heslo: *', 20)
+				->addRule(Form::EMAIL, 'Zadaný text nemá správný formát emailu');
+		$form->addPassword('password', 'Heslo', 20)
 				->setOption('description', 'Alespoň 6 znaků')
 				->addRule(Form::FILLED, 'Vyplňte Vaše heslo')
 				->addRule(Form::MIN_LENGTH, 'Heslo musí mít alespoň %d znaků.', 6);
-		$form->addPassword('password2', 'Heslo znovu: *', 20)
+		$form->addPassword('password2', 'Heslo znovu', 20)
 				->addConditionOn($form['password'], Form::VALID)
 				->addRule(Form::FILLED, 'Stejné heslo ještě jednou pro kontrolu')
 				->addRule(Form::EQUAL, 'Hesla se neshodují.', $form['password']);
@@ -53,11 +53,8 @@ class RegisterPresenter extends BasePresenter {
 
 	public function registerFormSubmitted(UI\Form $form) {
 		$values = $form->getValues();
-		$new_user_id = $this->userManager->add($values);
-		if ($new_user_id) {
-			$this->flashMessage('Registrace se zdařila, jo!');
-			$this->redirect('Sign:in');
-		}
+		$this->userManager->add($values);
+		$this->flashMessage('Registrace se zdařila, jo!', 'success');
+		$this->redirect('Sign:in');
 	}
-
 }
