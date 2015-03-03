@@ -20,11 +20,21 @@ nette:
 	session:
 		expiration: 14 days
 
+	routing:
+		debugger: true
+	
+	security:
+		debugger: true
 
+	#debugger:
+	#	bar: [NetteExtras\XDebugHelper()]
 services:
 	- App\Model\UserManager
 	- App\Model\Products
 	- App\Model\Orders
 	- App\Model\Categories
 	- App\RouterFactory
+	ordersService: App\Model\Orders(@database.default.context)
+	productsService: App\Model\Products(@database.default.context)
+	categoriesService: App\Model\Categories(@database.default.context)
 #	router: @App\RouterFactory::createRouter
