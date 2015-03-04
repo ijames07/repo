@@ -3,7 +3,6 @@
 namespace App\Presenters;
 
 use Nette,
-	App\Model,
 	Instante\Bootstrap3Renderer\BootstrapRenderer;
 
 /**
@@ -11,6 +10,9 @@ use Nette,
  */
 class SignPresenter extends BasePresenter {
 
+	/** @persistent */
+	public $backlink = '';
+	
 	/**
 	 * Sign-in form factory.
 	 * @return Nette\Application\UI\Form
@@ -43,12 +45,13 @@ class SignPresenter extends BasePresenter {
 		if ($values->remember) {
 			$this->getUser()->setExpiration('14 days', FALSE);
 		} else {
-			$this->getUser()->setExpiration('20 minutes', TRUE);
+			$this->getUser()->setExpiration('20 minutes');
 		}
 
 		try {
 			$this->getUser()->login($values->username, $values->password);
-			$this->flashMessage("Přihlášení proběhlo úspěšně");
+			$this->flashMessage("Přihlášení proběhlo úspěšně", 'success');
+			$this->restoreRequest($this->backlink);
 			$this->redirect('Products:');
 		} catch (Nette\Security\AuthenticationException $e) {
 			$form->addError($e->getMessage());
@@ -57,7 +60,7 @@ class SignPresenter extends BasePresenter {
 
 	public function actionOut() {
 		$this->getUser()->logout();
-		$this->flashMessage('Byl jsi odhlášen.');
+		$this->flashMessage('Byl jsi odhlášen.', 'info');
 		$this->redirect('in');
 	}
 
