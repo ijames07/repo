@@ -1,18 +1,18 @@
 {block title}
-Kategorie
+Rezervace
 {/block}
 {block header}
-						<li class="active"><a href="{plink Categories:}">Kategorie</a></li>
+						<li><a href="{plink Products:categories}">Kategorie</a></li>
                         <li><a href="{plink Products:}">Produkty</a></li>
+						<li class="active"><a href="{plink Bookings:}">Rezervace</a></li>
                         <li><a href="{plink Sign:out}">Odhlásit</a></li>
 {/block}
 
 {block content}
 <div class="container">
 	<div class="row">
-	{foreach $categories as $category}
-		<a href="{plink Products:category, $category->name}">{$category->name}</a><br />
-	{/foreach}
+		<h1>Nová rezervace</h1>
+		{control bookingForm}
 	</div>
 </div>
 {/block}

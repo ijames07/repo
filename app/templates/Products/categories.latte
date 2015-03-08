@@ -1,0 +1,21 @@
+{layout 'products.latte'}
+
+{block content}
+<div class="container">
+	<div class="row">
+		{foreach $categories as $category}
+			<a href="{plink Products:categories, $category->name}">{$category->name}</a><br />
+		{/foreach}
+	{foreach $products as $product}
+		<div class="product">
+			<img src="{$basePath}/images/products/{$product->id . 'n.' . $product->img_ext}" /><br />
+			<a n:href='Products:product, $product->id'>{$product->name}</a>
+			<div class="description">
+				{$product->description}
+			</div>
+			{$product->price |number:2:',':' '}
+		</div>
+	{/foreach}
+	</div>
+</div>
+{/block}

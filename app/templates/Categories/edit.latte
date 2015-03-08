@@ -10,9 +10,7 @@ Kategorie
 {block content}
 <div class="container">
 	<div class="row">
-	{foreach $categories as $category}
-		<a href="{plink Products:category, $category->name}">{$category->name}</a><br />
-	{/foreach}
+	{control categoryForm}
 	</div>
 </div>
 {/block}

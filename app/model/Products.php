@@ -23,10 +23,10 @@ class Products extends \Nette\Object {
 		$this->database = $database;
 	}
 	
-	/** @return Nette\Database\Table\ActiveRow */
-	public function getProductsFromCategory($cat) {
+	/** @return Nette\Database\Table\Selection */
+	public function getProductsFromCategory($name) {
 		return  $this->database->table(self::TABLE_NAME)
-				->where(':category_product.category.name', $cat);
+				->where(':category_product.category.name', $name);
 	}
 	
 	/** @return Nette\Databse\Table\ActiveRow */
@@ -60,8 +60,9 @@ class Products extends \Nette\Object {
 				->delete();
 	}
 
+	/** @return boolean */
 	public function updateProduct($product) {
-		$result = $this->database->table(self::TABLE_NAME)
+		return $this->database->table(self::TABLE_NAME)
 				->where('id', $product["id"])
 				->update($product);
 	}

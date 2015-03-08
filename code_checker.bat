@@ -1,0 +1,1 @@
+E:\wamp\bin\php\php5.5.12\php.exe E:\wamp\www\Nette-2.2.6\tools\Code-Checker\code-checker.php %* -d e:\wamp\www\nette

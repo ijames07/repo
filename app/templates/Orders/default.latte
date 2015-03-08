@@ -10,12 +10,16 @@ Požadavky na přípravu
 {/block}
 
 {block content}
-{foreach $orders as $order}
-	<div class="order">
-		ID: {$order->orders_id}<br />
-		Vytvořeno: {date('j.n.Y G:i', strtotime($order->creation_date))}<br />
-		Vyzvednutí: {date('G:i', strtotime($order->pickup_time))}<br />
-	</div>
-
+<div class="container">
+	<div class="row">
+		{foreach $orders as $order}
+		<div class="order">
+			ID: {$order->id}<br />
+			Vytvořeno: {date('j.n.Y G:i', strtotime($order->creation_date))}<br />
+			Vyzvednutí: {date('G:i', strtotime($order->pickup_time))}<br />
+		</div>
 {/foreach}
+	</div>
+</div>
+
 {/block}

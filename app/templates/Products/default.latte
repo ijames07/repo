@@ -1,17 +1,27 @@
 {layout 'products.latte'}
 
 {block content}
-<div class="row">
-{foreach $products as $product}
-	<div class="product">
-		<img src="{$basePath}/images/products/{$product->products_id . 'n.' . $product->ext}" /><br />
-		<a n:href='Products:product, $product->products_id'>{$product->name}</a>
-		<div class="description">
-			{$product->description}
-		</div>
-		{$product->price |number:2}
-		<a href="{link Products:edit $product->products_id}">Úprava</a>
+<div class="container">
+	<div class="row">
+		<a href="{plink Products:add}">Přidat produkt</a>
 	</div>
-{/foreach}
+	<div class="row">
+	{foreach $products as $product}
+		<div class="col-md-3 col-sm-6">
+			<div class="col-lg-4 col-md-5 col-sm-3 col-xs-4">
+				<img src="{$basePath}/images/products/{$product->id . 'n.' . $product->img_ext}" /><br />
+			</div>
+			<div class="col-lg-8 col-md-7 col-sm-9 col-xs-8">
+				<a n:href='Products:product, $product->id'>{$product->name}</a>
+				<div class="description">
+					{$product->description}
+				</div>
+				{$product->price |number:2}
+				<a href="{link Products:edit $product->id}">Úprava</a>
+			</div>
+		</div>
+			<div class="clearfix visible-xs"></div>
+	{/foreach}
+	</div>
 </div>
 {/block}

@@ -37,4 +37,7 @@ services:
 	ordersService: App\Model\Orders(@database.default.context)
 	productsService: App\Model\Products(@database.default.context)
 	categoriesService: App\Model\Categories(@database.default.context)
+	bookingsService: App\Model\Bookings(@database.default.context)
 #	router: @App\RouterFactory::createRouter
+#extensions:
+#	formDateTime: IPub\FormDateTime\DI\FormDateTimeExtension
