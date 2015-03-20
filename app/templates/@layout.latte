@@ -1,20 +1,13 @@
-{**
- * @param string   $basePath web base path
- * @param array    $flashes  flash messages
- *}
-
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
-
 	<title>{ifset #title}{include title|striptags} | {/ifset}Cat café</title>
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/s/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/s/bootstrap/dist/css/bootstrap-theme.css" />
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/custom.css" />
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/s/toastr/toastr.min.css" />
 	<link rel="stylesheet" href="{$basePath}/s/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
-	<!--<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />-->
 	<script src="{$basePath}/s/respond-minmax/dest/respond.min.js"></script>
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,40 +15,43 @@
 </head>
 
 <body>
-        <script> document.body.className+=' js' </script>
-        <div class="row">
-            <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                </div>
-                <div class="collapse navbar-collapse" id="collapse">
-                    <ul class="nav navbar-nav">
-                        {include #header}
-                    </ul>
-                </div>
-            </nav>
-        </div>
-        {include #content}
+	<script> document.body.className+=' js' </script>
+	<div class="row">
+	    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+		<div class="navbar-header">
+		    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		    </button>
+		</div>
+		<div class="collapse navbar-collapse" id="collapse">
+		    <ul class="nav navbar-nav">
+{include #header|indent:3}
+		    </ul>
+		</div>
+	    </nav>
+	</div>
+{include #content|indent:1}
+	<div class="container">
+		<footer class="row">
+			<p><small>&copy;2015 <a href="mailto:xobrtlik@mendelu.cz">Pavel Obrtlík</a> &bull; Všechna práva vyhrazena </small></p>
+			<p><small>Vytvořeno v <a href="http://nette.org">Nette Frameworku</a> a <a href="http://getbootstrap.com">Bootstrapu</a></small></p>
+			<p><small>Zdrojové kódy dostupné <a href="https://github.com/ijames07/repo">zde</a></small></p>
+		</footer>
+	</div>
+
 <!-- javascript -->
     <script src="{$basePath}/s/jquery/dist/jquery.min.js"></script>
 	<script src="{$basePath}/s/moment/min/moment.min.js"></script>
 	<script src="{$basePath}/s/moment/locale/cs.js"></script>
-    <script src="{$basePath}/s/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="{$basePath}/s/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="{$basePath}/js/custom.js"></script>
 	<script src="{$basePath}/s/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 	<script src="{$basePath}/s/toastr/toastr.min.js"></script>
-	<!--<script src="$basePath}/nette.ajax.js/nette.ajax.js"></script>
-	<script src="$basePath}/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
-	<script src="$basePath}/smalot-bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.cs.js"></script>-->
-	<script>
-		/*$(function () {
-			$.nette.init();
-		});*/
+	{if !empty($flashes)}
+		<script>
 		{foreach $flashes as $flash}
 			{if $flash->type == 'info'}
 				toastr.info({$flash->message});
@@ -68,9 +64,10 @@
 			{/if}
 		{/foreach}
 	</script>
+	{/if}
 		<script type="text/javascript">
-            $(function () {
-                $('#frm-bookingForm-date').datetimepicker({
+	    $(function () {
+		$('#frm-bookingForm-date').datetimepicker({
 					locale: 'cs',
 					format: 'dddd[,] D. MMMM YYYY [v] H [Hodin]',
 					sideBySide: true,
@@ -80,8 +77,7 @@
 				$('#frm-bookingForm-date').on('dp.change', function(data) {
 					refresh(data.timeStamp);
 				});
-            });
-        </script>
-	<!--<script src="$basePath}/js/ipub.formDateTime.js"></script>-->
+	    });
+	</script>
 </body>
 </html>
