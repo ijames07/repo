@@ -1,11 +1,13 @@
-{layout 'products.latte'}
+{layout '../logged_in.latte'}
 
 {block content}
 <div class="container">
 	<div class="row">
+		<h1>{$product->name}</h1>
 		<div class="col-md-6">
-			<h1>{$product->name}</h1>
-			<img class="img-responsive" src="{$basePath}/images/products/{$product->id}.{$product->img_ext}" /><br/>
+			<div class="thumbnail">
+				<img class="img-responsive" src="{$basePath}/images/products/{$product->id}.{$product->img_ext}" />
+			</div>
 		</div>
 		<div class="col-md-6">
 			<h2>Popis</h2> 
