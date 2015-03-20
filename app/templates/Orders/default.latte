@@ -1,22 +1,22 @@
-{block title}
-Požadavky na přípravu
-{/block}
-
-{block header}
-						<li><a href="{plink Categories:}">Kategorie</a></li>
-                        <li><a href="{plink Products:}">Produkty</a></li>
-						<li class="active"><a href="{plink Orders:}">Objednávky</a></li>
-                        <li><a href="{plink Sign:out}">Odhlásit</a></li>
-{/block}
+{layout '../logged_in.latte'}
 
 {block content}
 <div class="container">
 	<div class="row">
 		{foreach $orders as $order}
-		<div class="order">
-			ID: {$order->id}<br />
-			Vytvořeno: {date('j.n.Y G:i', strtotime($order->creation_date))}<br />
-			Vyzvednutí: {date('G:i', strtotime($order->pickup_time))}<br />
+		<div class="order col-md-8 thumbnail col-md-offset-2 col-xs-12 col-sm-12">
+			<div class="col-md-2 col-xs-4 col-sm-2">
+				<div class="thumbnail">
+					<img class="img img-responsive" src="{$basePath}/images/products/{$order->ref('product')->id}n.{$order->ref('product')->img_ext}" alt="{$order->ref('product')->name}" />
+				</div>
+			</div>
+			<div class="col-md-6 col-xs-8 col-sm-10">
+				<div class="caption">
+					{$order->ref('product')->name}
+				</div>
+				Vytvořeno: {$order->creation_date|date:'j.n.Y G:i'}<br />
+				Vyzvednutí: {$order->pickup_time|date:'G:i'}<br />
+			</div>
 		</div>
 {/foreach}
 	</div>
