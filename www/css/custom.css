@@ -1,11 +1,11 @@
 footer {
 	padding: 2em 0;
-	margin: 3em 0;
+	margin: 3em 0 0 0;
 	border-top: 1px solid #ddd;
 	color: #999;
 	text-align: center;
 }
-
+/*
 .glyphicon {
 	color: #cdae51;
 }
@@ -76,4 +76,25 @@ body {
 }
 .active .glyphicon {
 	color: #cdae51;
+}*/
+
+body {
+	padding-top: 60px;
+}
+@media (min-width: 768px) {
+  .navbar-nav {
+    width: 100%;
+    text-align: center;
+  }
+  .navbar-nav > li {
+    float: none;
+    display: inline-block;
+  }
+  .navbar-nav > li.navbar-right {
+    float: right !important;
+  }
+}
+
+.product .content {
+	padding: 10px;
 }
