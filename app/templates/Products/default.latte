@@ -1,4 +1,4 @@
-{layout 'products.latte'}
+{layout '../logged_in.latte'}
 
 {block content}
 <div class="container">
@@ -7,20 +7,24 @@
 	</div>
 	<div class="row">
 	{foreach $products as $product}
-		<div class="col-md-3 col-sm-6">
-			<div class="col-lg-4 col-md-5 col-sm-3 col-xs-4">
-				<img src="{$basePath}/images/products/{$product->id . 'n.' . $product->img_ext}" /><br />
+		<div class="col-md-3 col-sm-6 col-xs-12 thumbnail product">
+			<div class="col-lg-4 col-md-5 col-sm-3 col-xs-4 content">
+				<img class="img img-responsive" src="{$basePath}/images/products/{$product->id . 'n.' . $product->img_ext}" />
 			</div>
 			<div class="col-lg-8 col-md-7 col-sm-9 col-xs-8">
-				<a n:href='Products:product, $product->id'>{$product->name}</a>
-				<div class="description">
-					{$product->description}
+				<div class="caption">
+					<a n:href='Products:product, $product->id'>{$product->name}</a>
 				</div>
-				{$product->price |number:2}
+				<div class="description">
+					{$product->description|truncate:120}
+				</div>
+				{$product->price |number:2} Kč
 				<a href="{link Products:edit $product->id}">Úprava</a>
 			</div>
 		</div>
-			<div class="clearfix visible-xs"></div>
+		{if $iterator->isEven()}
+			<div class="clearfix visible-xs visible-sm"></div>
+		{/if}
 	{/foreach}
 	</div>
 </div>
