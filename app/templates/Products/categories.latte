@@ -1,11 +1,17 @@
-{layout 'products.latte'}
+{layout '../logged_in.latte'}
 
 {block content}
 <div class="container">
 	<div class="row">
+		<a href="{plink Categories:add}">Přidat kategorii</a>
+	</div>
+	<div class="row">
+		<ul>
 		{foreach $categories as $category}
-			<a href="{plink Products:categories, $category->name}">{$category->name}</a><br />
+			<a href="{plink Products:categories, $category->name}"><li class="thumbnail"><h4>{$category->name}</h4></li></a>
+			<a href="{plink Categories:edit, $category->id}">Upravit</a>
 		{/foreach}
+		</ul>
 	{foreach $products as $product}
 		<div class="product">
 			<img src="{$basePath}/images/products/{$product->id . 'n.' . $product->img_ext}" /><br />
