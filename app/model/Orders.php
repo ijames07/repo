@@ -22,8 +22,10 @@ class Orders extends \Nette\Object {
 	}
 	
 	/** @return Nette\Database\Table\Selection */
-	public function getAll() {
-		return $this->database->table('order')->order('solved DESC, creation_date DESC');
+	public function getAll($limit = 5) {
+		return $this->database->table('order')
+				->order('solved DESC, creation_date DESC')
+				->limit($limit);
 	}
 	
 	/** @return Nette\Database\Table\ActiveRow */
