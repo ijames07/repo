@@ -99,4 +99,13 @@ class CategoriesPresenter extends BasePresenter {
 			$this->context->productsService->removeCategoryFromProduct($product, $category_id);
 		}
 	}
+	
+	public function actionToggle($id = '') {
+		if ($id == '') {
+			return;
+		}
+		$this->context->categoriesService->toggle($id);
+		$this->redirect('Categories:');
+	}
+	
 }

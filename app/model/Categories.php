@@ -37,4 +37,21 @@ class Categories extends \Nette\Object {
 	public function get($id) {
 		return $this->database->table('category')->get($id);
 	}
+	
+	public function toggle($id = '') {
+		if ($id == '') {
+			return;
+		}
+		$cat = $this->database->table('category')
+				->where ('id', $id)
+				->fetch();
+		if (empty($cat)) {
+			return;
+		}
+		return $this->database->table('category')
+				->where('id', $id)
+				->update(array(
+					'active' => $cat->active ? false : true
+				));
+	} 
 }
