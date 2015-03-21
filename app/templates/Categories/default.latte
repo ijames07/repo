@@ -1,11 +1,29 @@
-{layout '../logged_in.latte'}
 
 {block content}
 <div class="container">
 	<div class="row">
-	{foreach $categories as $category}
-		<a href="{plink Products:category, $category->name}">{$category->name}</a><br />
-	{/foreach}
+		<div class="panel-heading">
+			<h1>Kategorie</h1>
+		</div>
+		<table class="table table-striped table-hover">
+			<thead>
+				<th></th>
+				<th></th>
+				<th></th>
+			</thead>
+			<tbody>
+			{foreach $categories as $category}
+				<tr>
+					<td>{$category->name}</td>
+					<td><a href="{plink Categories:edit $category->id}" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Upravit</a></td>
+					<td><a href="{plink Categories:toggle $category->id}" class="btn btn-default">{if $category->active}Deaktivovat{else}Aktivovat{/if}</a></td>
+				</tr>
+			{/foreach}
+			</tbody>
+		</table>
+	</div>
+	<div class="row">
+		<a class="btn btn-default" href="{plink Categories:add}">Přidat novou kategorii</a>
 	</div>
 </div>
 {/block}

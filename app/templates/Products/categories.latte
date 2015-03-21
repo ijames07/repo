@@ -1,15 +1,13 @@
-{layout '../logged_in.latte'}
-
 {block content}
 <div class="container">
 	<div class="row">
-		<a href="{plink Categories:add}">Přidat kategorii</a>
+		<h1 n:block="title">Kategorie</h1>
+		<a class="btn btn-default" href="{plink Categories:add}">Přidat kategorii</a>
 	</div>
 	<div class="row">
-		<ul>
+		<ul class="list-group">
 		{foreach $categories as $category}
-			<a href="{plink Products:categories, $category->name}"><li class="thumbnail"><h4>{$category->name}</h4></li></a>
-			<a href="{plink Categories:edit, $category->id}">Upravit</a>
+			<li class="list-group-item"><a href="{plink Products:categories, $category->name}">{$category->name}</a></li>
 		{/foreach}
 		</ul>
 	{foreach $products as $product}

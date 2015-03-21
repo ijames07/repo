@@ -1,9 +1,10 @@
-{layout '../logged_in.latte'}
-
+{block title}
+Produkty
+{/block}
 {block content}
 <div class="container">
 	<div class="row">
-		<a href="{plink Products:add}">Přidat produkt</a>
+		<a class="btn btn-default" href="{plink Products:add}">Přidat produkt</a>
 	</div>
 	<div class="row">
 	{foreach $products as $product}
