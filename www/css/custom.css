@@ -98,3 +98,8 @@ body {
 .product .content {
 	padding: 10px;
 }
+
+.productName {
+	text-align: center;
+	margin-bottom: 20px;
+}

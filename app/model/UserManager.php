@@ -11,7 +11,7 @@ use Nette,
 class UserManager extends Nette\Object implements Nette\Security\IAuthenticator {
 
 	const
-			TABLE_NAME = 'customer',
+			TABLE_NAME = 'user',
 			COLUMN_ID = 'id',
 			COLUMN_LOGIN = 'email',
 			COLUMN_PASSWORD = 'password',

@@ -1,26 +1,29 @@
-{block title}
-Produkty
-{/block}
 {block content}
 <div class="container">
+	<h1 n:block="title">{if isset($category)}{$category}{else}Všechny produkty{/if}</h1>
+	{if $user->isInRole('manager')}
 	<div class="row">
-		<a class="btn btn-default" href="{plink Products:add}">Přidat produkt</a>
+		<a class="btn btn-default col-xs-12" href="{plink Products:add}">Přidat produkt</a>
 	</div>
+	{/if}
 	<div class="row">
 	{foreach $products as $product}
 		<div class="col-md-3 col-sm-6 col-xs-12 thumbnail product">
 			<div class="col-lg-4 col-md-5 col-sm-3 col-xs-4 content">
-				<img class="img img-responsive" src="{$basePath}/images/products/{$product->id . 'n.' . $product->img_ext}" />
+				<img class="img-responsive img-rounded" src="{$basePath}/images/products/{$product->id . 'n.' . $product->img_ext}" />
 			</div>
 			<div class="col-lg-8 col-md-7 col-sm-9 col-xs-8">
 				<div class="caption">
-					<a n:href='Products:product, $product->id'>{$product->name}</a>
+					<a href="{if $user->isInRole('manager')}{link Products:edit $product->id}{else}{link Products:product $product->id}{/if}">{$product->name}</a>
+					<!--<div class="col-xs-3 col-xs-push-9">
+						
+					</div>-->
+
 				</div>
 				<div class="description">
 					{$product->description|truncate:120}
 				</div>
-				{$product->price |number:2} Kč
-				<a href="{link Products:edit $product->id}">Úprava</a>
+				{$product->price|number:2} Kč
 			</div>
 		</div>
 		{if $iterator->isEven()}

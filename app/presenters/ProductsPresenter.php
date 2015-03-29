@@ -14,9 +14,11 @@ class ProductsPresenter extends BasePresenter {
 
 	/** Pro uložení dat o produktu pro formuláře */
 	private $product;
-	
+	private $products;
+		
 	protected function startup() {
 		parent::startup();
+		$this->products = $this->context->productsService;
 		if (!$this->getUser()->isLoggedIn()) {
 			if ($this->user->logoutReason === Nette\Security\IUserStorage::INACTIVITY) {
 				$this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
@@ -25,26 +27,44 @@ class ProductsPresenter extends BasePresenter {
 		}
 	}
 
-	public function renderDefault() {
-		$this->template->products = $this->context->productsService->getAll()->order('name');
-	}
-	
-	public function renderCategories($name = '') {
-		if ($name == '') {
-			$this->template->categories = $this->context->categoriesService->getAll()->order("name");
-			$this->template->products = array();
-			$this->template->title = 'Všechny kategorie';
+	public function actionDefault($cat = '') {
+		if ($cat == '') {
+			// vypis vsech produktu
+			if ($this->getUser()->isInRole('manager')) {
+				$this->template->products = $this->products
+						->getAll()
+						->order('name');
+			} else {
+				$this->template->products = $this->products
+						->getActive()
+						->order('name');
+			}
 		} else {
-			$this->template->products = $this->context->productsService->getProductsFromCategory($name);
-			$this->template->title = $name;
-			$this->template->categories = array();
+			// vypis produktu v kategorii $cat
+			if ($this->getUser()->isInRole('manager')) {
+				$this->template->products = $this->products
+						->getAll()
+						->where(':category_product.category.id', $cat)
+						->order('name');
+			} else {
+				$this->template->products = $this->products
+						->getActive()
+						->where(':category_product.category.id', $cat)
+						->order('name');
+			}
+			$this->template->category = $this->context->categoriesService
+					->get($cat)
+					->name;
 		}
 	}
 	
 	public function renderProduct($id = '') {
-		$this->template->product = $this->context->productsService->getProduct($id);
-		$this->product = $this->template->product;
-		$this->template->title = $this->template->product->name;
+		if ($id == '') {
+			$this->redirect('Products:');
+		}
+		// ziskam info o produktu
+		$this->product = $this->products->getProduct($id);
+		$this->template->product = $this->product;
 	}
 	
 	protected function createComponentOrderForm() {
@@ -63,10 +83,15 @@ class ProductsPresenter extends BasePresenter {
 	
 	public function orderFormSubmitted(Form $form) {
 		$values = $form->getValues();
-		$inserted = $this->context->ordersService->insertOrder($this->getUser()->getId(), $values["id"], $values["time"]);
+		$inserted = $this->context->ordersService->insertOrder(
+				$this->getUser()->getId(),
+				$values["id"],
+				$values["time"]
+			);
 		if ($inserted) {
 			$this->flashMessage("Objednávka byla zaregistrována. "
-					. "Nezapomeňte si ji dnes přijít vyzvednout v " . date("G:i", strtotime($values["time"])), 'success');
+				. "Nezapomeňte si ji dnes přijít vyzvednout v " . date("G:i",
+				strtotime($values["time"])), 'success');
 			$this->redirect('Orders:');
 		}
 	}
@@ -75,10 +100,15 @@ class ProductsPresenter extends BasePresenter {
 		if ($product == 0) {
 			$this->redirect("Products:");
 		}
-		$this->product = $this->template->product = $this->context->productsService->getProduct($product);
-		$this->template->categories = $this->context->categoriesService->getAll()->order("name");
-		$allCategories = $this->context->categoriesService->getAll()->order('name');
-		$pCategories = $this->context->productsService->getCategories($this->product->id);
+		$this->product = $this->template->product = $this->products
+				->getProduct($product);
+		$this->template->categories = $this->context->categoriesService
+				->getAll()
+				->order("name");
+		$allCategories = $this->context->categoriesService
+				->getAll()
+				->order('name');
+		$pCategories = $this->products->getCategories($this->product->id);
 		$this->template->title = $this->template->product->name . ' úprava';
 		$raw = array();
 		foreach ($allCategories as $category) {
@@ -93,6 +123,7 @@ class ProductsPresenter extends BasePresenter {
 		));
 		$this["productForm"]["categories"]->setItems($raw);
 		$this["productForm"]->addHidden('product_id', $this->product->id);
+		$this["productForm"]->addSubmit('send', 'Upravit');
 		$productCategory = array();
 		foreach ($pCategories as $category => $row) {
 			array_push($productCategory, $row->category_id);
@@ -102,8 +133,12 @@ class ProductsPresenter extends BasePresenter {
 	}
 		
 	public function actionAdd() {
-		$this->template->title = 'Přidání produktu';
-		$allCategories = $this->context->categoriesService->getAll()->order('name');
+		if (!$this->getUser()->isInRole('manager')) {
+			$this->redirect('Products:');
+		}
+		$allCategories = $this->context->categoriesService
+				->getAll()
+				->order('name');
 		$categories = array();
 		foreach ($allCategories as $category => $row) {
 			$categories[$row->id] = $row->name;
@@ -129,7 +164,6 @@ class ProductsPresenter extends BasePresenter {
 				->addRule(Form::MAX_FILE_SIZE, 'Maximální povolená velikost obrázku je 10 MB',
 						10 * 1024 * 1024 /* v B */);
 		$form->addCheckboxList('categories', 'Kategorie');
-		$form->addSubmit('send');
 		$form->addProtection();
 		$form->onSuccess[] = callback($this, 'productFormSubmitted');
 		return $form;
@@ -153,14 +187,14 @@ class ProductsPresenter extends BasePresenter {
 		$current_cat = array(); // current product categories
 		if (isset($values["product_id"])) {
 			$data["id"] = $values["product_id"];
-			$product = $this->context->productsService->updateProduct($data);
-			$categories = $this->context->productsService->getCategories($values["product_id"]);
+			$product = $this->products->updateProduct($data);
+			$categories = $this->products->getCategories($values["product_id"]);
 			foreach ($categories as $category => $row) {
 				array_push($current_cat, $row->category_id);
 			}
 			unset($categories);
 		} else {
-			$product = $this->context->productsService->addProduct($data);
+			$product = $this->products->addProduct($data);
 		}
 
 		// sprava kategorii
@@ -168,10 +202,10 @@ class ProductsPresenter extends BasePresenter {
 		$rem = array_diff($current_cat, $values["categories"]);
 		$product_id = isset($values["product_id"]) ? $values["product_id"] : $product->id;
 		foreach ($add as $category) {
-			$this->context->productsService->addCategoryToProduct($product_id, $category);
+			$this->products->addCategoryToProduct($product_id, $category);
 		}
 		foreach ($rem as $category) {
-			$this->context->productsService->removeCategoryFromProduct($product_id, $category);
+			$this->products->removeCategoryFromProduct($product_id, $category);
 		}
 		// sprava obrazku
 		if (!$values["img"]->isOk()) {

@@ -17,6 +17,12 @@ class Categories extends \Nette\Object {
 		return $this->database->table("category");
 	}
 	
+	/** @return Nette\Database\Table\Selection */
+	public function getActive() {
+		return $this->database->table("category")
+				->where('active', true);
+	}
+	
 	/** @return Nette\Database\Table\ActiveRow */
 	public function add($name) {
 		return $this->database->table('category')->insert(array(

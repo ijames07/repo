@@ -1,7 +1,6 @@
-{layout '../logged_in.latte'}
-
 {block content}
 <div class="container">
+	<h1 n:block="title">Kategorie {$category->name|lower}</h1>
 	<div class="row">
 	{control categoryForm}
 	</div>

@@ -17,23 +17,40 @@ class CategoriesPresenter extends BasePresenter {
 	public function __construct(Model\Categories $categories) {
 		$this->categories = $categories;
 	}*/
+	private $categories;
+	private $products;
 
 	protected function startup() {
 		parent::startup();
+		$this->categories = $this->context->categoriesService;
+		$this->products = $this->context->productsService;
 		if (!$this->getUser()->isLoggedIn()) {
 			if ($this->user->logoutReason === Nette\Security\IUserStorage::INACTIVITY) {
-				$this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
+				$this->flashMessage('Byl jsi automaticky odhlášen z důvodu neaktivity. Pro pokračování se prosím přihlaš znovu.');
 			}
 			$this->redirect('Sign:in', array('backlink' => $this->storeRequest()));
 		}
 	}
 
 	public function actionDefault() {
-		$this->template->categories = $this->context->categoriesService->getAll()->order('name');
+		if ($this->getUser()->isInRole('customer')) {
+			$this->template->categories = $this->categories
+					->getActive()
+					->order('name');
+		} else {
+			$this->template->categories = $this->categories
+					->getAll()
+					->order('name');
+		}
 	}
 	
 	public function actionAdd() {
-		$this->template->products = $this->context->productsService->getAll()->order("name");
+		if (!$this->getUser()->isInRole('manager')) {
+			$this->redirect('Categories:');
+		}
+		$this->template->products = $this->products
+				->getAll()
+				->order("name");
 		$products = array();
 		foreach ($this->template->products as $product => $row) {
 			$products[$row->id] = $row->name;
@@ -42,16 +59,21 @@ class CategoriesPresenter extends BasePresenter {
 	}
 	
 	public function actionEdit($id = 0) {
-		if ($id == 0) {
-			$this->redirect('Products:categories:');
+		if ($id == 0 || !$this->getUser()->isInRole('manager')) {
+			$this->redirect('Categories:');
 		}
-		$category = $this->context->categoriesService->get($id);
-		$this->template->products = $this->context->productsService->getAll()->order("name");
+		// ziskani dat o kategorii
+		$this->template->category = $this->categories->get($id);
+		// ziskani produktu pro naplneni checkboxu ve formulari
+		$this->template->products = $this->products->getAll()->order("name");
 		$products = array();
+		// naplneni checkboxu ve formulari
 		foreach ($this->template->products as $product => $row) {
 			$products[$row->id] = $row->name;
 		}
-		$current_products = $this->context->productsService->getProductsFromCategory($category->name);
+		$current_products = $this->products
+				->getAll()
+				->where(':category_product.category.id', $this->template->category->id);
 		$current = array();
 		foreach ($current_products as $product) {
 			array_push($current, $product->id);
@@ -59,7 +81,7 @@ class CategoriesPresenter extends BasePresenter {
 		unset($current_products);
 		$this["categoryForm"]["products"]->setItems($products);
 		$this["categoryForm"]->setDefaults(array(
-			'name' => $category->name
+			'name' => $this->template->category->name
 		));
 		$this["categoryForm"]->setDefaults(['products' => $current]);
 		$this["categoryForm"]->addHidden('category_id', $id);
@@ -79,12 +101,13 @@ class CategoriesPresenter extends BasePresenter {
 	public function categoryFormSubmitted(Form $form) {
 		$values = $form->getValues();
 		if (isset($values["category_id"])) {
-			$category = $this->context->categoriesService->updateCategory($values["name"], $values["category_id"]);
+			$category = $this->categories->updateCategory($values["name"], $values["category_id"]);
 		} else {
-			$category = $this->context->categoriesService->add($values["name"]);
+			$category = $this->categories->add($values["name"]);
 		}
 		$category_id = isset($values["category_id"]) ? $values["category_id"] : $category->id;
-		$current_category_products = $this->context->productsService->getProductsFromCategory($values["name"]);
+		$current_category_products = $this->products->getAll()
+				->where(':category_product.category.id', $values["category_id"]);
 		$current = array();
 		foreach ($current_category_products as $category => $row) {
 			array_push($current, $row->id);
@@ -93,18 +116,18 @@ class CategoriesPresenter extends BasePresenter {
 		$add = array_diff($values["products"], $current);
 		$rem = array_diff($current, $values["products"]);
 		foreach ($add as $product) {
-			$this->context->productsService->addCategoryToProduct($product, $category_id);
+			$this->products->addCategoryToProduct($product, $category_id);
 		}
 		foreach ($rem as $product) {
-			$this->context->productsService->removeCategoryFromProduct($product, $category_id);
+			$this->products->removeCategoryFromProduct($product, $category_id);
 		}
 	}
 	
 	public function actionToggle($id = '') {
-		if ($id == '') {
-			return;
+		if ($id != '' && $this->getUser()->isInRole('manager')) {
+			$this->categories->toggle($id);
 		}
-		$this->context->categoriesService->toggle($id);
+		$this->flashMessage('Změněno', 'success');
 		$this->redirect('Categories:');
 	}
 	

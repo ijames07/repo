@@ -17,7 +17,7 @@ class BookingsPresenter extends BasePresenter {
 		parent::startup();
 		if (!$this->getUser()->isLoggedIn()) {
 			if ($this->user->logoutReason === Nette\Security\IUserStorage::INACTIVITY) {
-				$this->flashMessage('Byl jsi odhlášen z důvodu neaktivity. Přihlaš se prosím znovu');
+				$this->flashMessage('Byl jsi automaticky odhlášen z důvodu neaktivity. Přihlaš se prosím znovu.');
 			}
 			$this->redirect('Sign:in', array('backlink' => $this->storeRequest()));
 		}
@@ -61,10 +61,7 @@ class BookingsPresenter extends BasePresenter {
 	}
 	
 	public function actionFree($id = 0) {
-		if (!$this->isAjax()) {
-			$this->redirect('Bookings:');
-		}
-		if ($id == 0) {
+		if (!$this->isAjax() || $id == 0) {
 			$this->redirect('Bookings:');
 		}
 		$tables = $this->context->bookingsService->getTables($id);

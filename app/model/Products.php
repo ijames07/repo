@@ -23,12 +23,6 @@ class Products extends \Nette\Object {
 		$this->database = $database;
 	}
 	
-	/** @return Nette\Database\Table\Selection */
-	public function getProductsFromCategory($name) {
-		return  $this->database->table(self::TABLE_NAME)
-				->where(':category_product.category.name', $name);
-	}
-	
 	/** @return Nette\Databse\Table\ActiveRow */
 	public function getProduct($product = 0) {
 		return $this->database->table(self::TABLE_NAME)->get($product);
@@ -37,6 +31,12 @@ class Products extends \Nette\Object {
 	/** @return Nette\Database\Table\Selection */
 	public function getAll() {
 		return $this->database->table(self::TABLE_NAME);
+	}
+	
+	/** @return Nette\Database\Table\Selection */
+	public function getActive() {
+		return $this->database->table(self::TABLE_NAME)
+				->where(self::TABLE_NAME . '.active', true);
 	}
 	
 	/** @return Nette\Database\Table\ActiveRow */

@@ -20,8 +20,8 @@ class SignPresenter extends BasePresenter {
 	protected function createComponentSignInForm() {
 		$form = new Nette\Application\UI\Form;
 		$form->setRenderer(new BootstrapRenderer);
-		$form->addText('username', 'Uživatelské jméno:')
-				->setRequired('Zadej prosím uživatelské jméno');
+		$form->addText('username', 'Email:')
+				->setRequired('Zadej prosím svůj email');
 
 		$form->addPassword('password', 'Heslo:')
 				->setRequired('Zadej prosím své heslo');
@@ -61,7 +61,7 @@ class SignPresenter extends BasePresenter {
 	public function actionOut() {
 		$this->getUser()->logout();
 		$this->flashMessage('Byl jsi odhlášen.', 'info');
-		$this->redirect('in');
+		$this->redirect('Homepage:');
 	}
 
 }
