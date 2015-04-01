@@ -72,4 +72,16 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 		));
 	}
 	
+	/** @return Nette\Database\Table\ActiveRow */
+	public function get($id = '') {
+		if ($id == '') {
+			return;
+		}
+		return $this->database->table(self::TABLE_NAME)->get($id);
+	}
+	
+	/** @return int Number of all users in DB */
+	public function usersCount() {
+		return $this->database->table(self::TABLE_NAME)->count();
+	}
 }
