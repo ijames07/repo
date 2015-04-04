@@ -25,14 +25,25 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		    </button>
+			 <a class="navbar-brand visible-xs" href="#">{ifset #title}{include title|striptags}{/ifset}</a>
 		</div>
-		<div class="collapse navbar-collapse" id="collapse">
+		<div class="collapse navbar-collapse" id="collapse"> 
 		    <ul class="nav navbar-nav">
 				{if $user->loggedIn}
-					<li n:class="$presenter->isLinkCurrent('Categories:*') ? active, navbar-left"><a href="{plink Categories:}">Kategorie</a></li>
+					<li n:class="$presenter->isLinkCurrent('Categories:*') ? active, dropdown, navbar-left">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Kategorie<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="{plink Categories:}">Kategorie</a></li>
+							<li class="divider"></li>
+							{foreach $categories as $category}
+							<li n:class="$presenter->isLinkCurrent('Products:default', $category->id)"><a n:href="Products:default $category->id">{$category->name}</a></li>
+							{/foreach}
+						</ul>
+					</li>
 					<li n:class="$presenter->isLinkCurrent('Products:*') ? active, navbar-left"><a href="{plink Products:}">Produkty</a></li>
 					<li n:class="$presenter->isLinkCurrent('Orders:*') ? active, navbar-left"><a href="{plink Orders:}">Objednávky</a></li>
 					<li n:class="$presenter->isLinkCurrent('Bookings:*') ? active, navbar-left"><a href="{plink Bookings:}">Rezervace</a></li>
+					{if $user->isInRole('manager')}<li n:class="$presenter->isLinkCurrent('People:*') ? active, navbar-left"><a href="{plink People:}">Uživatelé</a></li>{/if}
 					<li class="navbar-right"></li>
 					<li class="navbar-right"><a href="{plink Sign:out}">Odhlásit</a></li>
 				{else}
@@ -76,19 +87,6 @@
 		{/foreach}
 	</script>
 	{/if}
-		<script type="text/javascript">
-	    $(function () {
-		$('#frm-bookingForm-date').datetimepicker({
-					locale: 'cs',
-					format: 'dddd[,] D. MMMM YYYY [v] H [Hodin]',
-					sideBySide: true,
-					minDate: new Date(new Date().getTime() + (60 - new Date().getMinutes()) * 1000 * 60),
-					daysOfWeekDisabled: [0]
-				});
-				$('#frm-bookingForm-date').on('dp.change', function(data) {
-					refresh(data.timeStamp);
-				});
-	    });
-	</script>
+	{ifset #script}{include script}{/ifset}
 </body>
 </html>
