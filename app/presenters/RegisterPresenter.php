@@ -8,9 +8,6 @@ use Nette\Application\UI,
 
 class RegisterPresenter extends BasePresenter {
 
-	/** @var \App\model\UserManager @inject * */
-	public $userManager;
-
 	protected function startup() {
 		parent::startup();
 	}
@@ -53,7 +50,7 @@ class RegisterPresenter extends BasePresenter {
 
 	public function registerFormSubmitted(UI\Form $form) {
 		$values = $form->getValues();
-		$this->userManager->add($values);
+		$this->context->usersService->add($values);
 		$this->flashMessage('Registrace se zdařila, jo!', 'success');
 		$this->redirect('Sign:in');
 	}
