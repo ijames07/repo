@@ -84,4 +84,9 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 	public function usersCount() {
 		return $this->database->table(self::TABLE_NAME)->count();
 	}
+	
+	/** @return Nette\Database\Table\Selection */
+	public function getAll() {
+		return $this->database->table(self::TABLE_NAME)->order(self::COLUMN_SURNAME);
+	}
 }

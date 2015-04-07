@@ -40,7 +40,7 @@ class Products extends \Nette\Object {
 	/** @return Nette\Database\Table\Selection */
 	public function getActive() {
 		return $this->database->table(self::TABLE_NAME)
-				->where(self::COLUMN_ACTIVE, true)
+				->where(self::TABLE_NAME . '.' . self::COLUMN_ACTIVE, true)
 				->order(self::COLUMN_NAME);
 	}
 	
@@ -75,7 +75,7 @@ class Products extends \Nette\Object {
 	
 	/** @return Nette\Database\Table\Selection */
 	public function getCategories($product_id = 0) {
-		return $this->database->table('category_product')
+		return $this->database->table(self::TABLE_CAT_PROD)
 				->where(self::COLUMN_PROD, $product_id)
 				->order(self::COLUMN_CAT);
 	}
