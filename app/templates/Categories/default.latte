@@ -1,6 +1,6 @@
 {block content}
 <div class="container">
-	<h1 n:block="title">Kategorie</h1>
+	<h1 n:block="title" class="hidden-xs">Kategorie</h1>
 	{if $user->isInRole('manager')}
 	<div class="row">
 		<a class="btn btn-default col-xs-12" href="{plink Categories:add}">Přidat novou kategorii</a>

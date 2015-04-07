@@ -1,0 +1,54 @@
+{block content}
+<div class="container">
+	{if $user->isInRole('customer')}
+	<h1 n:block="title" class="hidden-xs">Nová rezervace stolu</h1>
+	<div class="row">
+		{control bookingForm}
+		<div id="form">
+			
+		</div>
+	</div>
+	{/if}
+</div>
+{/block}
+{block script}
+	<script type="text/javascript">
+		function refresh(timestamp) {
+			$('#form').empty();
+			var jqxhr = $.ajax({ 
+							dataType: "json",
+							url: "/nette/www/bookings/free",
+							method: "POST",
+							cache: false,
+							data: { timestamp: timestamp }
+						})
+				.done(function(msg) {
+					$('#form').empty();
+					$form = $('<form class="form-horizontal" method="post" id="tables" action="/nette/www/bookings/book"><input type="hidden" name="time" value="' + timestamp + '"></form>');
+					var content = '<label class="control-label col-sm-2">Výběr stolu</label><div class="col-sm-10">';
+					
+					for (var i = 0; i < msg.length; i++) {
+						
+						content += '<div class="radio' + (msg[i].free ? '' : ' disabled') + '"><label><input type="radio" name="tables" value="' + msg[i].id + '" id="' + msg[i].id + '"' + (msg[i].free ? '' : ' disabled') + '>' + msg[i].seats + ' osoby' + (msg[i].smoking ? ', kuřácký':'') + (msg[i].indoor ? '' : ', terasa')  + '</label></div>';				
+					}
+					content += '<input class="btn btn-default" type="submit" name="send" value="Zarezervovat" /></div>';
+					$form.append(content);
+					$('#form').append($form);
+				});
+		}
+	    $(function () {
+		$('#frm-bookingForm-date').datetimepicker({
+					//inline: true,
+					sideBySide: true,
+					locale: 'cs',
+					format: 'dddd[,] D. MMMM YYYY [v] H [Hodin]',
+					minDate: new Date(new Date().getTime() + (60 - new Date().getMinutes()) * 1000 * 60),
+					daysOfWeekDisabled: [0]
+				});
+				$('#frm-bookingForm-date').on('dp.change', function(data) {
+					// get rid of ms part and emit refresh event
+					refresh(moment.utc(data.date).format('X'));
+				});
+	    });
+	</script>
+{/block}

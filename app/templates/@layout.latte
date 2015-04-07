@@ -33,7 +33,7 @@
 					<li n:class="$presenter->isLinkCurrent('Categories:*') ? active, dropdown, navbar-left">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Kategorie<span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
-							<li><a href="{plink Categories:}">Kategorie</a></li>
+							<li><a href="{plink Categories:}">Všechny kategorie</a></li>
 							<li class="divider"></li>
 							{foreach $categories as $category}
 							<li n:class="$presenter->isLinkCurrent('Products:default', $category->id)"><a n:href="Products:default $category->id">{$category->name}</a></li>

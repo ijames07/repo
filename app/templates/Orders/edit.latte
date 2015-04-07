@@ -1,0 +1,22 @@
+{block content}
+<div class="container">
+	<div clas="row">
+		{control orderForm}
+	</div>
+</div>
+{/block}
+
+{block script}
+<script type="text/javascript">
+	$(function () {
+		$('#frm-orderForm-solved').datetimepicker({
+					sideBySide: true,
+					locale: 'cs',
+					format: 'DD.MM.YYYY H:mm',
+					maxDate: new Date().getTime(),
+					daysOfWeekDisabled: [0]
+				});
+
+	});
+</script>
+{/block}
