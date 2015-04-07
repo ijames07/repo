@@ -122,6 +122,13 @@ class ProductsPresenter extends BasePresenter {
 			'price'			=> $this->product->price,
 		));
 		$this["productForm"]["categories"]->setItems($raw);
+		$this["productForm"]->addCheckbox('active', 'Je produkt v nabídce?')
+				->setOption('visibility', 'Nastavení viditelnosti pro zákazníky');
+		if ($this->product->active) {
+			$this["productForm"]["active"]->setDefaultValue(TRUE);
+		} else {
+			$this["productForm"]["active"]->setDefaultValue(FALSE);
+		}
 		$this["productForm"]->addHidden('product_id', $this->product->id);
 		$this["productForm"]->addSubmit('send', 'Upravit');
 		$productCategory = array();
@@ -165,17 +172,18 @@ class ProductsPresenter extends BasePresenter {
 						10 * 1024 * 1024 /* v B */);
 		$form->addCheckboxList('categories', 'Kategorie');
 		$form->addProtection();
-		$form->onSuccess[] = callback($this, 'productFormSubmitted');
+		$form->onSuccess[] = callback($this, 'productFormSuccess');
 		return $form;
 	}
 	
-	public function productFormSubmitted(Form $form) {
+	public function productFormSuccess(Form $form) {
 		$values = $form->getValues();
 		$data = array(
 			'ingredients'	=> $values["ingredients"],
 			'description'	=> $values["description"],
 			'price'			=> $values["price"],
 			'name'			=> $values["name"],
+			'active'		=> $values["active"] ? true : false,
 			'uri'			=> Nette\Utils\Strings::webalize($values["name"]),
 		);
 		
@@ -209,7 +217,8 @@ class ProductsPresenter extends BasePresenter {
 		}
 		// sprava obrazku
 		if (!$values["img"]->isOk()) {
-			return;
+			$this->flashMessage('Produkt byl úspěšně upraven', 'success');
+			$this->redirect('Products:');
 		}
 		try {
 			$fileName = $product_id . '.' . $data["img_ext"];
@@ -230,5 +239,7 @@ class ProductsPresenter extends BasePresenter {
 		} catch (Exception $e) {
 			throw new Exception($e);
 		}
+		$this->flashMessage('Produkt byl úspěšně upraven', 'success');
+		$this->redirect('Products:');
 	}
 }
