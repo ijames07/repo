@@ -10,4 +10,15 @@ use Nette,
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	
+	/** categories for menu */
+	private $categories;
+	
+	protected function startup() {
+		parent::startup();
+		if ($this->getUser()->isInRole('manager')) {
+			$this->template->categories = $this->context->getService('categoriesService')->getAll();
+		} else {
+			$this->template->categories = $this->context->getService('categoriesService')->getActive();
+		}
+	}
 }
