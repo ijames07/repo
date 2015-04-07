@@ -102,8 +102,18 @@ class CategoriesPresenter extends BasePresenter {
 		$values = $form->getValues();
 		if (isset($values["category_id"])) {
 			$category = $this->categories->updateCategory($values["name"], $values["category_id"]);
+			if ($category == 1) {
+				$this->flashMessage('Kategorie byla úspěšně upravena', 'success');
+			} else {
+				$this->flashMessage('Kategorii se nepovedlo upravit', 'error');
+			}
 		} else {
 			$category = $this->categories->add($values["name"]);
+			if ($category != false) {
+				$this->flashMessage('Kategorie byla úspěšně přidána', 'success');
+			} else {
+				$this->flashMessage('Kategorii se nepovedlo přidat', 'error');
+			}
 		}
 		$category_id = isset($values["category_id"]) ? $values["category_id"] : $category->id;
 		$current_category_products = $this->products->getAll()
@@ -121,6 +131,7 @@ class CategoriesPresenter extends BasePresenter {
 		foreach ($rem as $product) {
 			$this->products->removeCategoryFromProduct($product, $category_id);
 		}
+		$this->redirect('Categories:');
 	}
 	
 	public function actionToggle($id = '') {
