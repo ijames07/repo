@@ -24,64 +24,98 @@ class BookingsPresenter extends BasePresenter {
 	}
 	
 	public function actionDefault() {
-		$this->tables = $this->context->bookingsService->getTables()
-				->order("seats")
-				->order("smoking")
-				->order("indoor")
-				->order("id");
-		$tables = array();
-		foreach ($this->tables as $table) {
-			$tables[$table->id] = $table->seats . ' osoby' . ($table->smoking ? '' : ', nekuřácký')
-					. ($table->indoor ? "" : ", terasa");
-		}
-		unset($this->tables);
-		$this["bookingForm"]["tables"]->setItems($tables);
+		$this->template->followingBookings = $this->context->bookingsService
+				->getFollowingBookings($this->getUser()->getId());
+		$this->template->previousBookings = $this->context->bookingsService
+				->getPreviousBookings($this->getUser()->getId());
+	}
+	
+	public function actionAdd() {
+		
 	}
 	
 	/** @return Nette\Application\UI\Form */
 	protected function createComponentBookingForm() {
 		$form = new Form;
-
 		$form->setRenderer(new BootstrapRenderer);
-		/*$form->addText('time', 'Hodina')
-				->setType('time')
-				->setDefaultValue(date("G:i", strtotime('18:00')))
-				->addRule(Form::FILLED, 'Zadej čas ve který si chceš rezervovat');*/
 		$form->addTbDateTimePicker('date', 'Datum a čas rezervace')
 				->setRequired();
-		$form->addRadioList('tables', 'Volné stoly');
-		$form->addSubmit('send', 'Rezervovat');
-		$form->onSuccess[] = callback($this, 'bookingFormSubmitted');
 		return $form;
 	}
 	
-	public function bookingFormSubmitted(Form $form) {
-		$values = $form->getValues();
-		$this->flashMessage($values["date"], 'info');
-	}
-	
-	public function actionFree($id = 0) {
-		if (!$this->isAjax() || $id == 0) {
+	public function actionCancel($id) {
+		if (empty($id)) {
+			$this->flashMessage('Nedostal jsem id rezervace ke zrušení', 'error');
 			$this->redirect('Bookings:');
 		}
-		$tables = $this->context->bookingsService->getTables($id);
-		$booked_tables = array();
-		foreach ($tables as $table) {
-			array_push($booked_tables, $table->id);
+		$bookings = $this->context->bookingsService;
+		$result = $bookings->cancel($id, $this->getUser()->getId());
+		if ($result == 1) {
+			$this->flashMessage('Rezervace stornována', 'success');
+		} else {
+			$this->flashMessage('Rezervaci již nelze stornovat', 'error');
 		}
-		unset($tables);
-		$free_tables = $this->context->bookingsService->getTables()->where('id NOT IN ?', $booked_tables);
+		$this->redirect('Bookings:');
+	}
+	
+	public function actionFree() {
+		$timestamp = $this->request->getPost('timestamp')['timestamp'];
+		if (!$this->isAjax() || empty($timestamp)) {
+			$this->terminate();
+		}
+		$bookings = $this->context->bookingsService;
+		$takenTables = $bookings->getReservedTables($timestamp);
+		$bookedTables = array(0);
 		$response = array();
-		foreach ($free_tables as $table) {
+		foreach ($takenTables as $table => $row) {
+			array_push($bookedTables, $row->desk_id);
+		}
+		$freeTables = $bookings->getAllTables()
+				->where('id NOT IN (?)', $bookedTables);
+		foreach ($freeTables as $table => $row ) {
 			array_push($response, array(
-				'id' => $table->id,
-				'seats' => $table->seats,
-				'smoking' => $table->smoking,
-				'indoor' => $table->indoor
+				'id'	=> $row->id,
+				'seats' => $row->seats,
+				'smoking'	=> $row->smoking,
+				'indoor'	=> $row->indoor,
+				'free'	=> true
 			));
 		}
-		unset($free_tables);
+		foreach ($takenTables as $table => $row) {
+			array_push($bookedTables, $row->id);
+			array_push($response, array(
+				'id' =>		$row->ref('desk_id')->id,
+				'seats' =>	$row->ref('desk_id')->seats,
+				'smoking' =>$row->ref('desk_id')->smoking,
+				'indoor' =>	$row->ref('desk_id')->indoor,
+				'free'	=> false
+			));
+		}
 		$this->sendResponse(new Nette\Application\Responses\JsonResponse($response));
-		$this->terminate();
 	}
+	
+	public function actionBook() {
+		$values = $this->request->getPost();
+		if (empty($values["tables"]) || empty($values["time"])) {
+			$this->redirect('Bookings:');
+		}
+		$table_id = intval($values["tables"]);
+		$time = intval($values["time"]);
+		$bookings = $this->context->bookingsService;
+		$reserved = $bookings->getReservedTables($time);
+		foreach($reserved as $table) {
+			// kontrola obsazenosti stolu
+			if ($table_id == $table->desk_id) {
+				$this->redirect('Bookings:');
+			}
+		}
+		$newBooking = $bookings->add($this->getUser()->getId(), $table_id, $time);
+		if ($newBooking =! false) {
+			$this->flashMessage('Zarezervováno na ' . date('j.n.Y G', $time), 'success');
+		} else {
+			$this->flashMessage('Chyba při rezervaci, zkuste to prosím později.', 'error');
+		}
+		$this->redirect('Bookings:');
+	}
+	
 }
