@@ -29,20 +29,31 @@ class OrdersPresenter extends BasePresenter {
 			$this->template->opened = $orders->getOpened($user_id);
 		} else if($this->getUser()->isInRole('manager')) {
 			$this->template->orders = $orders->getAll(0);
+		} else {
+			$this->template->orders = $this->context->ordersService->getOrdersForProcessing();
 		}
 	}
 	
 	public function actionEdit($id) {
-		if (empty($id) || !$this->getUser()->isInRole('manager')) {
+		$post = $this->request->getPost();
+		if ((empty($id) && empty($post)) || !$this->getUser()->isInRole('manager')) {
 			$this->redirect('Orders:');
 		}
-		$this->template->order = $this->context->ordersService->getOrder($id);
-		$this["orderForm"]->setDefaults(array(
-			'order_id'	=>	$id
-		));
+		if (!empty($id)) {
+			$this->template->order = $this->context->ordersService->getOrder($id);
+		} else {
+			$values = array('order_id' => $post["order"], 'solved' => $post["time"]);
+			$result = $this->context->ordersService->updateOrder($values);
+			if ($result == 1) {
+				$this->flashMessage('Objednávka změněna', 'success');
+			} else {
+				$this->flashMessage('Nepodařilo se upravit', 'error');
+			}
+			$this->redirect('Orders:');
+		}
 	}
 	
-	protected function createComponentOrderForm() {
+	/*protected function createComponentOrderForm() {
 		$form = new Form;
 		$form->setRenderer(new \Instante\Bootstrap3Renderer\BootstrapRenderer);
 		$form->addTbDateTimePicker('solved', 'Datum a čas dokončení')
@@ -51,8 +62,8 @@ class OrdersPresenter extends BasePresenter {
 		$form->addSubmit('send', 'Změnit');
 		$form->onSuccess[] = callback($this, 'orderFormSuccess');
 		return $form;
-	}
-	
+	}*/
+	/*
 	public function orderFormSuccess(Form $form) {
 		$values = $form->getValues();
 		$values["employee_id"] = $this->getUser()->getId();
@@ -68,13 +79,67 @@ class OrdersPresenter extends BasePresenter {
 		}
 		$this->redirect('Orders:');
 		
-	}
+	}*/
 	
 	public function renderCreateOrder($prod, $pickup) {
 		$order = $this->context->orderService
 				->insertOrder($this->getUser()->getId(), $prod, $pickup);
 		$this->flashMessage('Požadavek na přípravu byl zaregistrován, vyzvědněte si jej v ' . $pickup, 'info');
 		$this->redirect('Orders:');
+	}
+	
+	public function actionPrepare() {
+		$id = $this->request->getPost('id')["id"];
+		if (!$this->getUser()->isInRole('employee') || !$this->isAjax() || empty($id)) {
+			$this->terminate();
+		}
+		$this->context->ordersService->prepare($id, $this->getUser()->getId());
+		$this->terminate();
+		/*if ($result == 1) {
+			$this->flashMessage('Připravuji', 'success');
+		} else {
+			$this->flashMessage('Chyba při přípravě', 'error');
+		}
+		$this->redirect('Orders:');*/
+	}
+	
+	public function actionFinish() {
+		$id = $this->request->getPost('id')["id"];
+		if (!$this->getUser()->isInRole('employee') || empty($id) || !$this->isAjax()) {
+			$this->terminate();
+		}
+		$this->context->ordersService->finish($id);
+		$this->terminate();
+		/*if ($result == 1) {
+			$this->flashMessage('Dokončeno', 'success');
+		} else {
+			$this->flashMessage('Chyba dokončení', 'error');
+		}
+		$this->redirect('Orders:');*/
+	}
+	
+	public function actionRefresh() {
+		//$last = $this->request->getPost('ts')['ts'];
+		if (!$this->isAjax() || !$this->getUser()->isInRole('employee')) {
+			$this->terminate();
+		}
+		//$now = new \Nette\Utils\DateTime();
+		$orders = $this->context->ordersService->getOrdersForProcessing();
+		$response = array();
+		foreach ($orders as $order) {
+			array_push($response, array(
+				'id'	=> $order->id,
+				'employee'	=> !empty($order->employee_id) ? $order->ref('employee_id')->surname : '',
+				'product'	=> $order->ref('product_id')->name,
+				'img_ext'	=> $order->ref('product_id')->img_ext,
+				'customer'	=> $order->ref('customer_id')->email,
+				'product_id'	=> $order->product_id,
+				'customer_id'	=> $order->customer_id,
+				'creation_date'	=> date('G:i', $order->creation_date->getTimestamp()),
+				'pickup_time'	=> date('G:i', $order->pickup_time->getTimestamp()),
+			));
+		}
+		$this->sendResponse(new \Nette\Application\Responses\JsonResponse($response));
 	}
 	
 	public function actionGet($id = 0) {

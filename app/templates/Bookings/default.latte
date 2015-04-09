@@ -1,10 +1,12 @@
 {block content}
 <div class="container">
 	<h1 n:block="title" class="hidden-xs">Rezervace</h1>
-	{if $user->isInRole('customer')}
+	{if !$user->isInRole('manager')}
 	<div class="row">
 		<a n:href="Bookings:add" class="btn btn-default col-md-8 col-md-offset-2 col-xs-12" style="margin-bottom: 10px;">Zarezervovat stůl</a>
 	</div>
+	{/if}
+	{if $user->isInRole('customer')}
 	<div class="row">
 		<div class="panel-group col-md-8 col-md-offset-2 col-xs-12" id="accordion" role="tablist" aria-multiselectable="true">
 			<div class="panel panel-default">
@@ -68,6 +70,29 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	{elseif $user->isInRole('manager')}
+	<div class="row">
+		<table class="table table-striped table-hover">
+			<thead>
+			<tr>
+				<th>Čas</th>
+				<th>Uživatel</th>
+				<th>Stůl</th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody>
+				{foreach $bookings as $booking}
+				<tr>
+					<td>{$booking->time|date:'j.n.Y G:i'}</td>
+					<td><a n:href="People:detail $booking->customer_id">{$booking->ref('customer_id')->name . ' ' . $booking->ref('customer_id')->surname}</a></td>
+					<td><button data-toggle="tooltip" title="Míst: {$booking->ref('desk_id')->seats}, {$booking->ref('desk_id')->smoking ? 'kuřácký' : 'nekuřácký'}, {$booking->ref('desk_id')->indoor ? 'vnitřní' : 'venkovní'}">{$booking->desk_id}</button></td>
+					<td>{if $booking->time > new Nette\Utils\Datetime()}<a n:href="Bookings:cancel $booking->id">Zrušit</a>{/if}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+		</table>
 	</div>
 	{/if}
 </div>

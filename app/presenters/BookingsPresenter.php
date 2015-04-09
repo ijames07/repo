@@ -24,23 +24,21 @@ class BookingsPresenter extends BasePresenter {
 	}
 	
 	public function actionDefault() {
-		$this->template->followingBookings = $this->context->bookingsService
-				->getFollowingBookings($this->getUser()->getId());
-		$this->template->previousBookings = $this->context->bookingsService
-				->getPreviousBookings($this->getUser()->getId());
+		if ($this->getUser()->isInRole('employee')) {
+			$this->redirect('Bookings:add');
+		}
+		if ($this->getUser()->isInRole('customer')) {
+			$this->template->followingBookings = $this->context->bookingsService
+					->getFollowingBookings($this->getUser()->getId());
+			$this->template->previousBookings = $this->context->bookingsService
+					->getPreviousBookings($this->getUser()->getId());
+		} else {
+			$this->template->bookings = $this->context->bookingsService->getAll();
+		}
 	}
 	
 	public function actionAdd() {
 		
-	}
-	
-	/** @return Nette\Application\UI\Form */
-	protected function createComponentBookingForm() {
-		$form = new Form;
-		$form->setRenderer(new BootstrapRenderer);
-		$form->addTbDateTimePicker('date', 'Datum a čas rezervace')
-				->setRequired();
-		return $form;
 	}
 	
 	public function actionCancel($id) {
@@ -49,7 +47,12 @@ class BookingsPresenter extends BasePresenter {
 			$this->redirect('Bookings:');
 		}
 		$bookings = $this->context->bookingsService;
-		$result = $bookings->cancel($id, $this->getUser()->getId());
+		if ($this->getUser()->isInRole('manager')) {
+			$result = $bookings->cancel($id);
+		} else {
+			$result = $bookings->cancel($id, $this->getUser()->getId());
+		}
+		
 		if ($result == 1) {
 			$this->flashMessage('Rezervace stornována', 'success');
 		} else {

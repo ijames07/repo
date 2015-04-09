@@ -89,4 +89,29 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 	public function getAll() {
 		return $this->database->table(self::TABLE_NAME)->order(self::COLUMN_SURNAME);
 	}
+	
+	/** @return int */
+	public function changePermission($data) {
+		if (empty($data)) {
+			return;
+		}
+		return $this->database->table(self::TABLE_NAME)
+				->where(self::COLUMN_ID, intval($data->employee))
+				->update(array(
+					self::COLUMN_ROLE => $data->role ? 'manager' : 'employee'
+				));
+	}
+	
+	/** @return Nette\Database\ResultSet */
+	public function overallInfo() {
+		return $this->database->query('	SELECT email, name, surname, "user".id, gender, registered,
+										SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS picked,
+										SUM(CASE WHEN solved IS NULL AND employee_id IS NULL AND "order".id IS NOT NULL THEN 1 ELSE 0 END) AS opened,
+										SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NULL THEN 1 ELSE 0 END) AS cancelled,
+										SUM(CASE WHEN solved IS NULL AND NOW() > (pickup_time + \'2 hour\'::INTERVAL) AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS left
+										FROM "user"
+										LEFT JOIN "order" ON ("user".id = "order".customer_id)
+										GROUP BY email, name, surname, "user".id, gender
+										ORDER BY surname, name');
+	}
 }

@@ -12,6 +12,7 @@ class Categories extends \Nette\Object {
 		TABLE_NAME = 'category',
 		COLUMN_ID = 'id',
 		COLUMN_ACTIVE = 'active',
+		COLUMN_URI = 'uri',
 		COLUMN_NAME = 'name';
 	
 	public function __construct(Nette\Database\Context $database) {
@@ -33,7 +34,8 @@ class Categories extends \Nette\Object {
 	/** @return Nette\Database\Table\ActiveRow */
 	public function add($name) {
 		return $this->database->table(self::TABLE_NAME)->insert(array(
-			self::COLUMN_NAME => $name
+			self::COLUMN_NAME => $name,
+			self::COLUMN_URI => \Nette\Utils\Strings::webalize($name)
 		));
 	}
 	
@@ -42,7 +44,8 @@ class Categories extends \Nette\Object {
 		return $this->database->table(self::TABLE_NAME)
 				->where(self::COLUMN_ID, $id)
 				->update(array(
-					self::COLUMN_NAME => $name
+					self::COLUMN_NAME => $name,
+					self::COLUMN_URI => \Nette\Utils\Strings::webalize($name)
 				));
 	}
 	

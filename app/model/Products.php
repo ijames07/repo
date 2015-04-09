@@ -18,6 +18,7 @@ class Products extends \Nette\Object {
 			COLUMN_CAT = 'category_id',
 			COLUMN_PROD = 'product_id',
 			COLUMN_PRICE = "price",
+			COLUMN_TIME = 'preparation_time',
 			COLUMN_NAME = "name",
 			COLUMN_URI = "uri",
 			COLUMN_ACTIVE = 'active',

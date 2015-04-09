@@ -1,10 +1,12 @@
 {block content}
 <div class="container">
-	<h1 n:block="title" class="productName">{$product->name} úprava</h1>
+	<h1 n:block="title" class="productName hidden-xs">{$product->name} úprava</h1>
 	<div class="row">
 		<div class="col-md-6">
-			*Aktuální obrázek, pokud nevyberete nový, nezmění se<br />
-			<img src="{$basePath}/images/products/{$product->id}.{$product->img_ext}" title="aktuální obrázek"/>
+			<div class="thumbnail">
+				*Aktuální obrázek, pokud nevyberete nový, nezmění se<br />
+				<img class="img img-responsive" src="{$basePath}/images/products/{$product->id}.{$product->img_ext}" title="aktuální obrázek"/>
+			</div>
 		</div>
 		<div class="col-md-6">
 			{control productForm}

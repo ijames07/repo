@@ -1,7 +1,20 @@
 {block content}
 <div class="container">
 	<div clas="row">
-		{control orderForm}
+		<div class="container">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<div class="row">
+						<div id="frm-orderForm-solved"></div>
+					</div>
+					<form action="{link Orders:edit}" method="POST" id="edit">
+						<input type="hidden" name="time" id="time" data-id="{$order->id}" />
+						<input type="hidden" name="order" value="{$order->id}" />
+						<input type="submit" class="btn btn-default" id="send" value="Dokončit" />
+					</form>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 {/block}
@@ -10,13 +23,24 @@
 <script type="text/javascript">
 	$(function () {
 		$('#frm-orderForm-solved').datetimepicker({
+					inline: true,
 					sideBySide: true,
 					locale: 'cs',
-					format: 'DD.MM.YYYY H:mm',
-					maxDate: new Date().getTime(),
+					format: 'DD.MM.YYYY H [Hod]',
+					maxDate: moment(),
 					daysOfWeekDisabled: [0]
 				});
-
+		$('#frm-orderForm-solved').on('dp.change', function(data) {
+			$('#time').attr('value', moment.utc(data.date).format('X'));
+		});
+		$('#send').click(function() {
+			var data = $('#time').attr('value');
+			if (data !== undefined) {
+				$('#edit').submit();
+			} else {
+				alert('Nejdřív vyber čas dokončení');
+			}
+		});
 	});
 </script>
 {/block}

@@ -40,7 +40,7 @@
 				</tbody>
 			</table>
 		</div>
-	{else}
+	{elseif $user->isInRole('customer')}
 	<div class="row">
 		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			{if count($prepared) > 0}
@@ -228,7 +228,105 @@
 			{/if}
 		</div>
 	</div>
+	{else}
+	<div class="row">
+		<table class="table table-striped table-hover">
+			<thead>
+			<tr>
+				<th></th>
+				<th>Produkt</th>
+				<th></th>
+				<th>Vytvořil</th>
+				<th>Vytvořeno</th>
+				<th>Vyzvedne</th>
+				<th>Připravuje</th>
+				<th></th>
+			<tr>
+			</thead>
+			<tbody  id="orders">
+				{foreach $orders as $order}
+				<tr class="preparation" data-id="{$order->id}">
+					<td>
+					{if !empty($order->employee_id)}
+						<a href="#" onclick="finish({$order->id});" class="btn btn-success">Dokončit</a>
+					{/if}
+					</td>
+					<td><img class="img img-responsive" src="{$basePath}/images/products/{$order->product_id}n.{$order->ref('product_id')->img_ext}" /></td>
+					<td>{$order->ref('product_id')->name}</td>
+					<td><a href="{link People:detail $order->customer_id}">{$order->ref('customer_id')->email}</a></td>
+					<td>{$order->creation_date|date:'G:i'}</td>
+					<td><strong>{$order->pickup_time|date:'G:i'}<strong></td>
+					<td>{empty($order->employee_id) ? '' : $order->ref('employee_id')->surname}</td>
+					<td>
+					{if empty($order->employee_id)}
+						<a href="#" onclick="prepare({$order->id});" class="btn btn-info">Připravit</a>
+					{/if}
+					</td>
+				</tr>	
+				{/foreach}
+			</tbody>
+		</table>
+	</div>
 	{/if}
 </div>
+{/block}
+{block script}
+{if $user->isInRole('employee')}
+<script type="text/javascript">
+	//var now = moment().format('X');
+function refresh() {
+	$.ajax({link Orders:refresh}, {
+			cache: false,
+			method: "POST",
+			//data: { ts: now}
+		})
+		.done(function(orders) {
+			//now = moment.unix(data.now).format('X');
+			console.log(orders);
+			$('#orders').empty();
+			for (var i = 0; i < orders.length; i++) {
+				var $tr = $('<tr class="preparation" data-id="' + orders[i].id +
+						'"><td>' + (orders[i].employee != "" ? '<button onclick="finish(' + orders[i].id + ');" class="btn btn-success">Dokončit</button>' : '') + '</td>'
+						+ '<td>' + '<img class="img img-responsive" src="' + {$basePath} + '/images/products/' + orders[i].product_id + 'n.' + orders[i].img_ext + '" />' + '</td>'
+						+ '<td>' + orders[i].product + '</td>'
+						+ '<td>' + "<a href=" + {link People:detail}+ "/" + orders[i].customer_id + '>'
+								+ orders[i].customer + '</a></td>' +
+						'<td>' + orders[i].creation_date + '</td>' +
+						'<td><strong>' + orders[i].pickup_time + '</strong></td>' +
+						'<td>' + orders[i].employee + '</td>' +
+						'<td>' + (orders[i].employee == "" ? '<button onclick="prepare(' + orders[i].id + ');" class="btn btn-info">Připravit</button>' : '') + '</td>'
+						+ '</tr>');
+				$('#orders').append($tr);
+			}
+			$('.preparation').click(function() {
+				$(this).fadeOut();
+			});
+		});
+}
 
+function prepare(id) {
+	$.ajax({link Orders:prepare}, {
+			cache: false,
+			method: "POST",
+			data: { id:  id}
+		});
+}
+
+function finish(id) {
+	$.ajax({link Orders:finish}, {
+			cache: false,
+			method: "POST",
+			data: { id: id}
+		});
+}
+$(document).ready(function() {
+	$('.preparation').click(function() {
+		$(this).fadeOut();
+	});
+	setInterval(function() {
+		refresh();
+	}, 3000);
+});
+</script>
+{/if}
 {/block}

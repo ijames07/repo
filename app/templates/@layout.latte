@@ -30,7 +30,8 @@
 		<div class="collapse navbar-collapse" id="collapse"> 
 		    <ul class="nav navbar-nav">
 				{if $user->loggedIn}
-					<li n:class="$presenter->isLinkCurrent('Categories:*') ? active, dropdown, navbar-left">
+					{if !$user->isInRole('employee')}
+					<li n:class="$presenter->isLinkCurrent('Categories:*') ? active, $presenter->isLinkCurrent('Products:default') && !empty($presenter->getParameter('cat')) ? active, dropdown, navbar-left">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Kategorie<span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="{plink Categories:}">Všechny kategorie</a></li>
@@ -40,10 +41,11 @@
 							{/foreach}
 						</ul>
 					</li>
-					<li n:class="$presenter->isLinkCurrent('Products:*') ? active, navbar-left"><a href="{plink Products:}">Produkty</a></li>
+					<li n:class="$presenter->isLinkCurrent('Products:default', NULL) ? active, $presenter->isLinkCurrent('Products:add') ? active, $presenter->isLinkCurrent('Products:product') ? active, $presenter->isLinkCurrent('Products:edit') ? active, navbar-left"><a href="{plink Products:}">Produkty</a></li>
+					{/if}
 					<li n:class="$presenter->isLinkCurrent('Orders:*') ? active, navbar-left"><a href="{plink Orders:}">Objednávky</a></li>
 					<li n:class="$presenter->isLinkCurrent('Bookings:*') ? active, navbar-left"><a href="{plink Bookings:}">Rezervace</a></li>
-					{if $user->isInRole('manager')}<li n:class="$presenter->isLinkCurrent('People:*') ? active, navbar-left"><a href="{plink People:}">Uživatelé</a></li>{/if}
+					{if !$user->isInRole('customer')}<li n:class="$presenter->isLinkCurrent('People:*') ? active, navbar-left"><a href="{plink People:}">Uživatelé</a></li>{/if}
 					<li class="navbar-right"></li>
 					<li class="navbar-right"><a href="{plink Sign:out}">Odhlásit</a></li>
 				{else}
@@ -69,7 +71,6 @@
 	<script src="{$basePath}/s/moment/min/moment.min.js"></script>
 	<script src="{$basePath}/s/moment/locale/cs.js"></script>
 	<script src="{$basePath}/s/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="{$basePath}/js/custom.js"></script>
 	<script src="{$basePath}/s/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 	<script src="{$basePath}/s/toastr/toastr.min.js"></script>
 	{if !empty($flashes)}

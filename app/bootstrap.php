@@ -52,33 +52,43 @@ $container->router[] = new Route('produkty/<id>', array(
 			'presenter' => 'Products',
 			'action' => 'product'
 		));
-/*$container->router[] = new Route('produkty/kategorie/<id>', array(
-	'id' => array(
-		Route::FILTER_IN => function ($str) use ($container) {
-			if (is_numeric($str)) {
-				return $str;
-			} else {
-				/** @var $categories Nette\Database\Table\Selection 
-				$categories = $container->categoriesService->getAll();
-				return $categories->where('name', $str)->fetch()->id;
-			}
-		},
-		Route::FILTER_OUT => function ($str) use ($container) {
-			if (!is_numeric($str)) {
-				return $str;
-			} else {
-				/** @var categories Nette\Database\Table\Selection 
-				$categories = $container->categoriesService->getAll();
-				return $categories->where('id', $str)->fetch()->name;
-			}
-		}
-	),
-	'presenter' => 'Products',
-	'action' => 'categories'
-));*/
+$container->router[] = new Route('kategorie/<cat>', array(
+			'cat' => array(
+				Route::FILTER_IN => function ($str) use ($container) {
+					if(is_numeric($str)) {
+						return $str;
+					} else {
+						/** @var products Nette\Database\Table\Selection */
+						$categories = $container->categoriesService->getAll();
+						return $categories->where('uri', $str)->fetch()->id;
+					}
+				},
+				Route::FILTER_OUT => function ($id) use ($container) {
+					if (!is_numeric($id)) {
+						return $id;
+					} else {
+						return Nette\Utils\Strings::webalize($container->categoriesService->get($id)->name);
+					}
+				}
+			),
+			'presenter' => 'Products',
+			'action' => 'default'
+		));
 $container->router[] = new Route('produkty', array(
 	'presenter' => 'Products',
 	'action' => 'default'
+));
+$container->router[] = new Route('kategorie', array(
+	'presenter' => 'Categories',
+	'action' => 'default'
+));
+$container->router[] = new Route('rezervace', array(
+	'presenter' => 'Bookings',
+	'action' => 'default'
+));
+$container->router[] = new Route('rezervace/pridat', array(
+	'presenter' => 'Bookings',
+	'action' => 'add'
 ));
 $container->router[] = new Route('objednavky', array(
 	'presenter' => 'Orders',

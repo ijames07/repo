@@ -16,6 +16,7 @@ class Orders extends \Nette\Object {
 			COLUMN_EMPLOYEE = 'employee_id',
 			COLUMN_PICKUP = 'pickup_time',
 			COLUMN_SOLVED = 'solved',
+			COLUMN_PREPARED = 'prepared',
 			COLUMN_CREATION= 'creation_date';
 	
 	public function __construct(Nette\Database\Context $database) {
@@ -68,6 +69,7 @@ class Orders extends \Nette\Object {
 		return $this->database->table(self::TABLE_NAME)
 				->where(self::COLUMN_CUSTOMER, $id)
 				->where(self::COLUMN_SOLVED . ' IS NULL')
+				->where(self::COLUMN_PICKUP . " > NOW() - INTERVAL '8 hours'")
 				->where(self::COLUMN_EMPLOYEE . ' IS NULL');
 	}
 	
@@ -79,7 +81,7 @@ class Orders extends \Nette\Object {
 		return $this->database->table(self::TABLE_NAME)
 				->where(self::COLUMN_ID, $values["order_id"])
 				->update(array(
-					'solved'	=> $values["solved"]->__toString()
+					'solved'	=> date('c', $values["solved"])
 				));
 	}
 
@@ -132,5 +134,85 @@ class Orders extends \Nette\Object {
 				->update(array(
 					self::COLUMN_SOLVED => 'NOW()'
 				));
+	}
+	
+	public function getServed($user) {
+		if (empty($user)) {
+			return;
+		}
+		return $this->database->table(self::TABLE_NAME)
+				->where(self::COLUMN_EMPLOYEE, $user)
+				->order(self::COLUMN_SOLVED);
+	}
+	
+	/** @return Nette\Database\Table\Selection */
+	public function getOrdersForProcessing($ts = '') {
+		if ($ts == '') {
+			return $this->database->table(self::TABLE_NAME)
+					->where(self::COLUMN_SOLVED . ' IS NULL')
+					->where(self::COLUMN_CREATION . " >= NOW() - INTERVAL '8 hours'")
+					->order(self::COLUMN_PICKUP . ' ASC');
+		} else {
+			$date = date('c', $ts);
+			return $this->database->table(self::TABLE_NAME)
+					->where(self::COLUMN_SOLVED . ' IS NULL')
+					->where(self::COLUMN_CREATION . " >= ? OR " . self::COLUMN_PREPARED . " >= ?", $date, $date)
+					->order(self::COLUMN_PICKUP . ' ASC');
+		}
+	}
+	
+	/** @return int */
+	public function prepare($id, $emp) {
+		if (empty($id)) {
+			return;
+		}
+		return $this->database->table(self::TABLE_NAME)
+				->where(self::COLUMN_ID, intval($id))
+				->where(self::COLUMN_EMPLOYEE . ' IS NULL')
+				->update(array(
+					self::COLUMN_EMPLOYEE => $emp,
+					self::COLUMN_PREPARED => 'NOW()'
+				));
+	}
+	
+	/** @return int */
+	public function finish($id) {
+		if (empty($id)) {
+			return;
+		}
+		return $this->database->table(self::TABLE_NAME)
+				->where(self::COLUMN_ID, intval($id))
+				->where(self::COLUMN_EMPLOYEE . ' IS NOT NULL')
+				->update(array(
+					self::COLUMN_SOLVED => 'NOW()'
+				));
+	}
+	
+	/** @return Nette\Database\ResultSet */
+	public function getMostOrderedProduct($user) {
+		if (empty($user)) {
+			return;
+		}
+		return $this->database->query('	SELECT product.name, COUNT(*) FROM "order"
+										JOIN product ON ("order".product_id = product.id)
+										WHERE customer_id = 3
+										GROUP BY product.name
+										ORDER BY COUNT DESC
+										LIMIT 1');
+	}
+	
+	/** @return Nette\Database\ResultSet */
+	public function getMostOrderedCategory($user) {
+		if (empty($user)) {
+			return;
+		}
+		return $this->database->query('	SELECT category.name, COUNT(*) FROM "order"
+										JOIN product ON ("order".product_id = product.id)
+										JOIN category_product ON (product.id = category_product.product_id)
+										JOIN category ON (category_product.category_id = category.id)
+										WHERE customer_id = 3
+										GROUP BY category.name
+										ORDER BY COUNT DESC
+										LIMIT 1');
 	}
 }

@@ -40,7 +40,7 @@ class Bookings extends \Nette\Object {
 		return $this->database->table(self::TABLE_BOOKING)
 				->where(self::COLUMN_TIME . ' BETWEEN ? AND ?',
 				date('c', strtotime('-2 hours', $timestamp)), 
-				date('c', strtotime('+2 hours', $timestamp)));
+				date('c', strtotime('+4 hours', $timestamp)));
 	}
 	
 	/** @return Nette\Database\Table\Selection */
@@ -56,7 +56,8 @@ class Bookings extends \Nette\Object {
 		}
 		return $this->database->table(self::TABLE_BOOKING)
 				->where(self::COLUMN_TIME . " > NOW()")
-				->where(self::COLUMN_CUSTOMER, $user);
+				->where(self::COLUMN_CUSTOMER, $user)
+				->order(self::COLUMN_TIME . ' ASC');
 	}
 	
 	/** @return Nette\Database\Table\Selection */
@@ -66,7 +67,8 @@ class Bookings extends \Nette\Object {
 		}
 		return $this->database->table(self::TABLE_BOOKING)
 				->where(self::COLUMN_TIME . " < NOW() + INTERVAL '2 hours'")
-				->where(self::COLUMN_CUSTOMER, $user);
+				->where(self::COLUMN_CUSTOMER, $user)
+				->order(self::COLUMN_TIME . ' DESC');
 	}
 	
 	/* @return Nette\Database\Table\ActiveRow */
@@ -80,15 +82,28 @@ class Bookings extends \Nette\Object {
 	}
 	
 	/** @return int Number of deleted bookings */
-	public function cancel($id, $user) {
-		if (empty($id) || empty($user)) {
+	public function cancel($id, $user = '') {
+		if (empty($id)) {
 			return;
 		}
-		return $this->database->table(self::TABLE_BOOKING)
-				->where(self::COLUMN_ID, $id)
-				->where(self::COLUMN_CUSTOMER, $user)
-				->where(self::COLUMN_TIME . ' > NOW()')
-				->delete();
+		if ($user != '') {
+			return $this->database->table(self::TABLE_BOOKING)
+					->where(self::COLUMN_ID, $id)
+					->where(self::COLUMN_CUSTOMER, $user)
+					->where(self::COLUMN_TIME . ' > NOW()')
+					->delete();
+		} else {
+			// manager deletes
+			return $this->database->table(self::TABLE_BOOKING)
+					->where(self::COLUMN_ID, $id)
+					->where(self::COLUMN_TIME . ' > NOW()')
+					->delete();
+		}
+	}
+	
+	/** @return Nette\Database\Table\Selection */
+	public function getAll() {
+		return $this->database->table(self::TABLE_BOOKING)->order(self::COLUMN_TIME . ' DESC');
 	}
 
 }

@@ -37,7 +37,7 @@ class SignPresenter extends BasePresenter {
 	
 	public function actionIn() {
 		if ($this->getUser()->isLoggedIn()) {
-			$this->redirect("Categories:");
+			$this->redirect("Orders:");
 		}
 	}
 
@@ -52,7 +52,7 @@ class SignPresenter extends BasePresenter {
 			$this->getUser()->login($values->username, $values->password);
 			$this->flashMessage("Přihlášení proběhlo úspěšně", 'success');
 			$this->restoreRequest($this->backlink);
-			$this->redirect('Products:');
+			$this->redirect('Orders:');
 		} catch (Nette\Security\AuthenticationException $e) {
 			$form->addError($e->getMessage());
 		}

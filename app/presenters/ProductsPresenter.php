@@ -58,12 +58,13 @@ class ProductsPresenter extends BasePresenter {
 		}
 	}
 	
-	public function renderProduct($id = '') {
+	public function actionProduct($id = '') {
 		if ($id == '') {
 			$this->redirect('Products:');
 		}
 		// ziskam info o produktu
 		$this->product = $this->products->getProduct($id);
+		$this["productForm"]["time"]->setAttribute('min', '18:00');
 		$this->template->product = $this->product;
 	}
 	
@@ -120,6 +121,7 @@ class ProductsPresenter extends BasePresenter {
 			'description'	=> $this->product->description,
 			'ingredients'	=> $this->product->ingredients,
 			'price'			=> $this->product->price,
+			'time'			=>$this->product->preparation_time
 		));
 		$this["productForm"]["categories"]->setItems($raw);
 		$this["productForm"]->addCheckbox('active', 'Je produkt v nabídce?')
@@ -165,6 +167,8 @@ class ProductsPresenter extends BasePresenter {
 				->addRule(Form::FILLED, "Napište prosím složení produktu");
 		$form->addText('price', 'Cena')
 				->addRule(Form::FILLED, "Napište prodejní cenu");
+		$form->addText('time', 'Doba přípravy v min')
+				->addRule(Form::FILLED, "Napište kolik minut potřebujete pro přípravu");
 		$form->addUpload('img', 'Obrázek')
 				->addCondition(Form::FILLED)
 				->addRule(Form::IMAGE, 'obrazek')
@@ -181,7 +185,8 @@ class ProductsPresenter extends BasePresenter {
 		$data = array(
 			'ingredients'	=> $values["ingredients"],
 			'description'	=> $values["description"],
-			'price'			=> $values["price"],
+			'price'			=> str_replace(',', '.', $values["price"]),
+			'preparation_time'=> $values["time"],
 			'name'			=> $values["name"],
 			'active'		=> $values["active"] ? true : false,
 			'uri'			=> Nette\Utils\Strings::webalize($values["name"]),

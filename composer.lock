@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c12397c95c3737d99a15f08b0bdb5611",
+    "hash": "18a10c6a13c6a3437aad2a8be0c0040a",
     "packages": [
         {
             "name": "dg/adminer-custom",
@@ -1262,44 +1262,6 @@
             "description": "Nette Utility Classes",
             "homepage": "http://nette.org",
             "time": "2014-12-30 09:55:38"
-        },
-        {
-            "name": "radekdostal/nette-datetimepicker",
-            "version": "2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/radekdostal/Nette-DateTimePicker.git",
-                "reference": "2b1028b552cb9dfd03b1f108ae6f6f2eab8c286d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/radekdostal/Nette-DateTimePicker/zipball/2b1028b552cb9dfd03b1f108ae6f6f2eab8c286d",
-                "reference": "2b1028b552cb9dfd03b1f108ae6f6f2eab8c286d",
-                "shasum": ""
-            },
-            "require": {
-                "nette/nette": "^2.2.0",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1",
-                "LGPL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Radek Dostál",
-                    "email": "radek.dostal@gmail.com"
-                }
-            ],
-            "description": "DatePicker and DateTimePicker input controls for Nette Framework",
-            "time": "2015-02-06 20:46:22"
         },
         {
             "name": "tracy/tracy",

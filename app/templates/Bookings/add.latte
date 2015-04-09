@@ -1,11 +1,19 @@
 {block content}
 <div class="container">
-	{if $user->isInRole('customer')}
-	<h1 n:block="title" class="hidden-xs">Nová rezervace stolu</h1>
+	{if $user->isInRole('customer') || $user->isInRole('employee')}
+	<h1 n:block="title" class="hidden-xs">{if $user->isInRole('employee')}Rezervace{else}Nová rezervace{/if}</h1>
 	<div class="row">
-		{control bookingForm}
-		<div id="form">
-			
+		<div class="container">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<div class="row">
+						<div id="frm-bookingForm-date"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6" id="form">
+
+			</div>
 		</div>
 	</div>
 	{/if}
@@ -38,11 +46,11 @@
 		}
 	    $(function () {
 		$('#frm-bookingForm-date').datetimepicker({
-					//inline: true,
+					inline: true,
 					sideBySide: true,
 					locale: 'cs',
 					format: 'dddd[,] D. MMMM YYYY [v] H [Hodin]',
-					minDate: new Date(new Date().getTime() + (60 - new Date().getMinutes()) * 1000 * 60),
+					minDate: moment(),
 					daysOfWeekDisabled: [0]
 				});
 				$('#frm-bookingForm-date').on('dp.change', function(data) {
