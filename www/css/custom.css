@@ -95,6 +95,10 @@ body {
   }
 }
 
+.product {
+	min-height: 200px;
+}
+
 .product .content {
 	padding: 10px;
 }

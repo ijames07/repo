@@ -64,7 +64,12 @@ class ProductsPresenter extends BasePresenter {
 		}
 		// ziskam info o produktu
 		$this->product = $this->products->getProduct($id);
-		$this["orderForm"]["time"]->setAttribute('min', '18:00');
+		$now = new Nette\Utils\DateTime();
+		// zohledneni doby pripravy do nejkratsi doby objednavky
+		$min = 15 * 60 > $this->product->preparation_time * 60 + 60 ? 15 * 60 : $this->product->preparation_time * 60 + 60;
+		$this["orderForm"]["time"]
+				->setAttribute('min', date('G:i', $now->getTimestamp() + $min))
+				->setDefaultValue(date('G:i', $now->getTimestamp() + $min));
 		$this->template->product = $this->product;
 	}
 	
@@ -73,8 +78,6 @@ class ProductsPresenter extends BasePresenter {
 		$form->setRenderer(new BootstrapRenderer);
 		$form->addText('time', "Čas vyzvednutí")
 				->setType('time')
-				// 15 min = 15 * 60 s
-				->setDefaultValue(date("G:i", time() + 15 * 60))
 				->addRule(Form::FILLED, "Vlož čas vyzvednutí");
 		$form->addHidden("id", $this->product["id"]);
 		$form->addSubmit("send", "Připravit");
