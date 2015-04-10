@@ -33,14 +33,14 @@ class Orders extends \Nette\Object {
 	}
 	
 	/** @return Nette\Database\Table\Selection */
-	public function getAll($limit = 5) {
-		if ($limit == 0) {
+	public function getAll(Nette\Utils\Paginator $paginator = null) {
+		if ($paginator == null) {
 			return $this->database->table(self::TABLE_NAME)
 					->order(self::COLUMN_CREATION . ' DESC');
 		} else {
 			return $this->database->table(self::TABLE_NAME)
 					->order(self::COLUMN_SOLVED . ' DESC, ' . self::COLUMN_CREATION . ' DESC')
-					->limit($limit);	
+					->limit($paginator->getItemsPerPage(), $paginator->getOffset());	
 		}
 
 	}
@@ -195,7 +195,7 @@ class Orders extends \Nette\Object {
 		}
 		return $this->database->query('	SELECT product.name, COUNT(*) FROM "order"
 										JOIN product ON ("order".product_id = product.id)
-										WHERE customer_id = 3
+										WHERE customer_id = ' . $user . '
 										GROUP BY product.name
 										ORDER BY COUNT DESC
 										LIMIT 1');
@@ -210,7 +210,7 @@ class Orders extends \Nette\Object {
 										JOIN product ON ("order".product_id = product.id)
 										JOIN category_product ON (product.id = category_product.product_id)
 										JOIN category ON (category_product.category_id = category.id)
-										WHERE customer_id = 3
+										WHERE customer_id = ' . $user . '
 										GROUP BY category.name
 										ORDER BY COUNT DESC
 										LIMIT 1');

@@ -120,7 +120,7 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 	}
 	
 	/** @return Nette\Database\ResultSet */
-	public function overallInfo() {
+	public function overallInfo(Nette\Utils\Paginator $paginator) {
 		return $this->database->query('	SELECT email, name, surname, "user".id, gender, registered,
 										SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS picked,
 										SUM(CASE WHEN solved IS NULL AND employee_id IS NULL AND "order".id IS NOT NULL THEN 1 ELSE 0 END) AS opened,
@@ -129,7 +129,9 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 										FROM "user"
 										LEFT JOIN "order" ON ("user".id = "order".customer_id)
 										GROUP BY email, name, surname, "user".id, gender
-										ORDER BY surname, name');
+										ORDER BY surname, name LIMIT '.
+										$paginator->getLength() . ' OFFSET ' .
+										$paginator->getOffset());
 	}
 }
 

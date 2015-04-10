@@ -24,13 +24,14 @@ class PeoplePresenter extends BasePresenter {
 		}
 	}
 
-	public function actionDefault($id = '') {
+	public function actionDefault($id = 1) {
 		$users = $this->context->usersService;
-		$this->template->allUsers = $users->overallInfo();
-		/*$paginator = new Nette\Utils\Paginator;
+		$paginator = new Nette\Utils\Paginator;
 		$paginator->setItemCount($this->context->getService('usersService')->usersCount()); // celkový počet položek (např. článků)
-		$paginator->setItemsPerPage(30); // počet položek na stránce
-		$paginator->setPage(1); // číslo aktuální stránky, číslováno od 1*/
+		$paginator->setItemsPerPage(5); // počet položek na stránce
+		$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
+		$this->template->allUsers = $users->overallInfo($paginator);
+		$this->template->paginator = $paginator;
 
 	}
 	
@@ -73,6 +74,7 @@ class PeoplePresenter extends BasePresenter {
 			$this->template->cancelled = $orders->getCancelled($id);
 			$this->template->opened = $orders->getOpened($id);
 			$this->template->prepared = $orders->getPrepared($id);
+			$this->template->bookings = $this->context->bookingsService->getAll()->where('customer_id', $id);
 			if (count($this->template->picked) != 0 || count($this->template->unpicked) != 0) {
 				$this->template->ratio = number_format(floatval(count($this->template->picked) / (count($this->template->picked) + count($this->template->unpicked))), 2, ",", " ");
 			} else {

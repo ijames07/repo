@@ -23,7 +23,7 @@ class BookingsPresenter extends BasePresenter {
 		}
 	}
 	
-	public function actionDefault() {
+	public function actionDefault($id = 1) {
 		if ($this->getUser()->isInRole('employee')) {
 			$this->redirect('Bookings:add');
 		}
@@ -33,7 +33,14 @@ class BookingsPresenter extends BasePresenter {
 			$this->template->previousBookings = $this->context->bookingsService
 					->getPreviousBookings($this->getUser()->getId());
 		} else {
-			$this->template->bookings = $this->context->bookingsService->getAll();
+			// manager
+			$bookings = $this->context->getService('bookingsService');
+			$paginator = new Nette\Utils\Paginator;
+			$paginator->setItemCount(count($bookings->getAll())); // celkový počet rezervací
+			$paginator->setItemsPerPage(15); // počet položek na stránce
+			$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
+			$this->template->bookings = $bookings->getAll($paginator);
+			$this->template->paginator = $paginator;
 		}
 	}
 	

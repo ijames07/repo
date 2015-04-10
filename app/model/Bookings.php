@@ -102,8 +102,15 @@ class Bookings extends \Nette\Object {
 	}
 	
 	/** @return Nette\Database\Table\Selection */
-	public function getAll() {
-		return $this->database->table(self::TABLE_BOOKING)->order(self::COLUMN_TIME . ' DESC');
+	public function getAll(Nette\Utils\Paginator $paginator = null) {
+		if ($paginator == null) {
+			return $this->database->table(self::TABLE_BOOKING)
+					->order(self::COLUMN_TIME . ' DESC');
+		} else {
+			return $this->database->table(self::TABLE_BOOKING)
+					->order(self::COLUMN_TIME . ' DESC')
+					->limit($paginator->getItemsPerPage(), $paginator->getOffset());
+		}
 	}
 
 }

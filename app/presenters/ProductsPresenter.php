@@ -64,7 +64,7 @@ class ProductsPresenter extends BasePresenter {
 		}
 		// ziskam info o produktu
 		$this->product = $this->products->getProduct($id);
-		$this["productForm"]["time"]->setAttribute('min', '18:00');
+		$this["orderForm"]["time"]->setAttribute('min', '18:00');
 		$this->template->product = $this->product;
 	}
 	

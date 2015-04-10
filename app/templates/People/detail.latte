@@ -1,0 +1,32 @@
+{block content}
+<div class="container">
+	<h1 n:block="title" class="hidden-xs">{$userDetails->name . ' ' . $userDetails->surname}</h1>
+	<div class="row">
+		<p>Email: {$userDetails->email} <br />
+			Role: {if $userDetails->role == 'employee'}zaměstnanec{elseif $userDetails->role == 'manager'}manažer{else}zákazník{/if}<br />
+			Registrován: {$userDetails->registered|date:'j.n.Y'}<br />
+			Aktivován: {$userDetails->active? 'ano' : 'ne'}<br />
+			Pohlaví: {$userDetails->gender ? 'muž' : 'žena'}<br />
+			Přijímá newsletter: {$userDetails->newsletter ? 'ano' : 'ne'}<br />
+		</p>
+		{if $userDetails->role == 'customer'}
+		Celkem objednávek: {count($picked) + count($opened) + count($prepared) + count($unpicked) + count($cancelled)}<br />
+		Ratio: <strong>{$ratio}</strong><br />
+		<h4>Stavy objednávek</h4>
+		<ul>
+			<li><strong>Vyzvednuto:</strong> {count($picked)}</li>
+			<li>Objednáno: {count($opened)}</li>
+			<li>Připravováno: {count($prepared)}</li>
+			<li><strong>Nevyzvednuto:</strong> {count($unpicked)}</li>
+			<li>Zrušeno: {count($cancelled)}</li>
+		</ul>
+		<ul>
+			<li>Nejčastěji objednávaný produkt: {$favouriteProduct->name}: {$favouriteProduct->count}</li>
+			<li>Nejčastěji objednávaná kategorie: {$favouriteCategory->name}: {$favouriteCategory->count}</li>
+		</ul>
+		Celkem rezervací: {count($bookings)}
+	{elseif $userDetails->role == 'employee'}
+		Obsloužil celkem lidí: {count($served)}
+	{/if}
+	</div>
+</div>

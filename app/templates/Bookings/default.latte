@@ -93,6 +93,27 @@
 				{/foreach}
 			</tbody>
 		</table>
+		<nav style="text-align:center;">
+			<ul class="pagination">
+				{if !$presenter->getParameter('id') == NULL}
+				<li>
+					<a n:href="Bookings:default ($presenter->getParameter('id') - 1)" aria-label="Předchozí">
+						<span aria-hidden="true">&laquo;</span>
+					</a>
+				</li>
+				{/if}
+				{for $i = 1; $i <= $paginator->getLastPage(); $i++}
+					<li n:class="$presenter->getParameter('id') == $i ? active, $presenter->getParameter('id') == NULL && $i == 1 ? active"><a n:href="Bookings:default $i">{$i}</a></li>
+				{/for}
+				{if !($presenter->getParameter('id') == $paginator->getLastPage())}
+				<li>
+					<a n:href="Bookings:default ($presenter->getParameter('id') != NULL ? ($presenter->getParameter('id') + 1) : 2)" aria-label="Další">
+						<span aria-hidden="true">&raquo;</span>
+					</a>
+				</li>
+				{/if}
+			</ul>
+		</nav>
 	</div>
 	{/if}
 </div>
