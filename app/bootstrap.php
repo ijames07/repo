@@ -82,7 +82,7 @@ $container->router[] = new Route('kategorie', array(
 	'presenter' => 'Categories',
 	'action' => 'default'
 ));
-$container->router[] = new Route('rezervace', array(
+$container->router[] = new Route('rezervace/[<id>]', array(
 	'presenter' => 'Bookings',
 	'action' => 'default'
 ));
@@ -90,7 +90,7 @@ $container->router[] = new Route('rezervace/pridat', array(
 	'presenter' => 'Bookings',
 	'action' => 'add'
 ));
-$container->router[] = new Route('objednavky', array(
+$container->router[] = new Route('objednavky/[<id>]', array(
 	'presenter' => 'Orders',
 	'action' => 'default'
 ));
