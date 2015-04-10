@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{ifset #title}{include title|striptags} | {/ifset}Cat café</title>
+	<link rel="stylesheet" href="{$basePath}/s/jquery-mobile-bower/css/jquery.mobile-1.4.5.min.css" />
+	<link rel="shortcut icon" href="{$basePath}/favicon.ico" />
+	<meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1">
+	{block head}{/block}
+</head>
+
+<body>
+	<script> document.body.className+=' js' </script>
+	<div data-role="page" id="page" data-dom-cache="false">
+		<div data-role="header" data-position="fixed">
+			<a data-icon="back" href="" onclick="window.history.back();">Zpět</a>
+			<h1>{ifset #title}{include title|striptags}{/ifset}</h1>
+			<a class="ui-btn ui-btn-inline ui-icon-gear ui-btn-icon-notext" href="#menu" data-rel="popup">Akce</a>
+			<div data-role="popup" id="menu">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Možnosti</li>
+					<li><a href="#">Uživatel</a></li>
+					<li><a href="http://localhost/project/client/model/logout.php">Odhlásit</a></li>
+				</ul>
+			</div>
+		</div>
+			<div data-role="content">
+				{include #content}
+			</div>
+	</div>
+	
+	<div class="row">
+	    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+		<div class="navbar-header">
+		    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		    </button>
+			 <a class="navbar-brand visible-xs" href="#">{ifset #title}{include title|striptags}{/ifset}</a>
+		</div>
+		<div class="collapse navbar-collapse" id="collapse"> 
+		    <ul class="nav navbar-nav">
+				{if $user->loggedIn}
+					{if !$user->isInRole('employee')}
+					<li n:class="$presenter->isLinkCurrent('Categories:*') ? active, $presenter->isLinkCurrent('Products:default') && !empty($presenter->getParameter('cat')) ? active, dropdown, navbar-left">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Kategorie<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="{plink Categories:}">Všechny kategorie</a></li>
+							<li class="divider"></li>
+							{foreach $categories as $category}
+							<li n:class="$presenter->isLinkCurrent('Products:default', $category->id)"><a n:href="Products:default $category->id">{$category->name}</a></li>
+							{/foreach}
+						</ul>
+					</li>
+					<li n:class="$presenter->isLinkCurrent('Products:default', NULL) ? active, $presenter->isLinkCurrent('Products:add') ? active, $presenter->isLinkCurrent('Products:product') ? active, $presenter->isLinkCurrent('Products:edit') ? active, navbar-left"><a href="{plink Products:}">Produkty</a></li>
+					{/if}
+					<li n:class="$presenter->isLinkCurrent('Orders:*') ? active, navbar-left"><a href="{plink Orders:}">Objednávky</a></li>
+					<li n:class="$presenter->isLinkCurrent('Bookings:*') ? active, navbar-left"><a href="{plink Bookings:}">Rezervace</a></li>
+					{if !$user->isInRole('customer')}<li n:class="$presenter->isLinkCurrent('People:*') ? active, navbar-left"><a href="{plink People:}">Uživatelé</a></li>{/if}
+					<li class="navbar-right"></li>
+					<li class="navbar-right"><a href="{plink Sign:out}">Odhlásit</a></li>
+				{else}
+					<li n:class="$presenter->isLinkCurrent('Homepage:*') ? active, navbar-left"><a href="{plink Homepage:}">Domů</a></li>
+					<li n:class="$presenter->isLinkCurrent('Sign:*') ? active, navbar-left"><a href="{plink Sign:in}">Přihlásit</a></li>
+					<li n:class="$presenter->isLinkCurrent('Register:*') ? active, navbar-left"><a href="{plink Register:}">Registrovat</a></li>	
+				{/if}
+		    </ul>
+		</div>
+	    </nav>
+	</div>
+{include #content|indent:1}
+	<div class="container">
+		<footer class="row">
+			<p><small>&copy;2015 <a href="mailto:xobrtlik@mendelu.cz">Pavel Obrtlík</a> &bull; Všechna práva vyhrazena </small></p>
+			<p><small>Vytvořeno v <a href="http://nette.org">Nette Frameworku</a> a <a href="http://getbootstrap.com">Bootstrapu</a></small></p>
+			<p><small>Zdrojové kódy dostupné <a href="https://github.com/ijames07/repo">zde</a></small></p>
+		</footer>
+	</div>
+
+<!-- javascript -->
+    <script src="{$basePath}/s/jquery/dist/jquery.min.js"></script>
+	<script src="{$basePath}/s/jquery-mobile-bower/js/jquery.mobile-1.4.5.js"></script>
+	<script src="{$basePath}/js/toast.js"></script>
+	<script src="{$basePath}/s/moment/min/moment.min.js"></script>
+	<script src="{$basePath}/s/moment/locale/cs.js"></script>
+	{if !empty($flashes)}
+		<script>
+		{foreach $flashes as $flash}
+			{if $flash->type == 'info'}
+				toastr.info({$flash->message});
+			{elseif $flash->type == 'success'}
+				toastr.success({$flash->message});
+			{elseif $flash->type == 'error'}
+				toastr.error({$flash->message});
+			{else}
+				toastr.warning({$flash->message});
+			{/if}
+		{/foreach}
+	</script>
+	{/if}
+	{ifset #script}{include script}{/ifset}
+</body>
+</html>

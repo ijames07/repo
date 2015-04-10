@@ -59,17 +59,34 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 	/**
 	 * Adds new user.
 	 * @param  string
-	 * @return void
+	 * @return Nette\Database\Table\ActiveRow 
 	 */
 	public function add($data) {
-		$this->database->table(self::TABLE_NAME)->insert(array(
-			self::COLUMN_LOGIN => $data['email'],
-			self::COLUMN_PASSWORD => Passwords::hash($data["password"]),
-			self::COLUMN_GENDER => (boolean) $data['gender'],
-			self::COLUMN_NAME => $data['name'],
-			self::COLUMN_SURNAME => $data['surname'],
-			self::COLUMN_NEWSLETTER => $data['newsletter']
-		));
+		try {
+			return $this->database->table(self::TABLE_NAME)->insert(array(
+				self::COLUMN_LOGIN => $data['email'],
+				self::COLUMN_PASSWORD => Passwords::hash($data["password"]),
+				self::COLUMN_GENDER => (boolean) $data['gender'],
+				self::COLUMN_NAME => $data['name'],
+				self::COLUMN_SURNAME => $data['surname'],
+				self::COLUMN_NEWSLETTER => $data['newsletter']
+			));
+		} catch (\PDOException $e) {
+			if ($e->getCode() == 23505) {
+				return -1;
+			} else {
+				return false;
+			}
+		}
+	}
+	
+	/** @return int */
+	public function activate($email) {
+		return $this->database->table(self::TABLE_NAME)
+				->where(self::COLUMN_LOGIN, $email)
+				->update(array(
+					self::COLUMN_ACTIVE => true
+				));
 	}
 	
 	/** @return Nette\Database\Table\ActiveRow */
@@ -114,4 +131,8 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 										GROUP BY email, name, surname, "user".id, gender
 										ORDER BY surname, name');
 	}
+}
+
+class DuplicateNameException extends \Exception {
+	
 }

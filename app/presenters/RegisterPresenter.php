@@ -4,6 +4,8 @@ namespace App\Presenters;
 
 use Nette\Application\UI,
 	Nette\Application\UI\Form as Form,
+	Nette\Mail\Message,
+	Nette\Mail\SendmailMailer,
 	Instante\Bootstrap3Renderer\BootstrapRenderer;
 
 class RegisterPresenter extends BasePresenter {
@@ -50,8 +52,45 @@ class RegisterPresenter extends BasePresenter {
 
 	public function registerFormSubmitted(UI\Form $form) {
 		$values = $form->getValues();
-		$this->context->usersService->add($values);
-		$this->flashMessage('Registrace se zdařila, jo!', 'success');
+		$result = $this->context->usersService->add($values);
+		if ($result == false) {
+			$this->flashMessage('Registrace se nezdařila, opakujte to prosím později', 'error');
+		} else if ($result === -1) {
+			$this->flashMessage('Zadaný email je již zaregistrován, zkuste se přihlásit', 'warning');
+		} else {
+			$this->flashMessage('Registrace se zdařila, na Váš email byl zaslán email s aktivačním kódem.', 'success');
+		}
+		$this->sendMail($values->email);
 		$this->redirect('Sign:in');
+	}
+	
+	public function actionActivate($mail, $hash) {
+		if (empty($mail) || empty($hash)) {
+			$this->flashMessage('Neznámy email pro aktivaci', 'error');
+			$this->redirect('Homepage:');
+		}
+		if (strcmp(sha1($mail . 'traktor'), $hash) == 0) {
+			$result = $this->context->usersService->activate($mail);
+			if ($result == 1) {
+				$this->flashMessage('Aktivace účtu proběhla úspěšně', 'success');
+			}
+		} else {
+			$this->flashMessage('Špatný kontrolní součet pro kontrolu', 'error');	
+		}
+		$this->redirect('Homepage:');
+	}
+	
+	private function sendMail($user) {
+		$mail = new Message();
+		$hash = sha1($user . 'traktor');
+		$mail->setFrom('cat@cafe.cz')
+				->addTo($user)
+				->setSubject('Aktivace účtu Cat Café')
+				->setBody("Dobrý den,\nvaše registrace byla přijata. Pro aktivac"
+						. "i účtu klikněte prosím na následující odkaz:\nhttp://"
+						. "localhost/nette/www/register/activate?mail=$user&hash"
+						. "=$hash");
+		$mailer = new SendmailMailer;
+		$mailer->send($mail);
 	}
 }

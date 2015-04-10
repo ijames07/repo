@@ -26,6 +26,9 @@ nette:
 	security:
 		debugger: true
 
+extensions:
+	mobileDetect: IPub\MobileDetect\DI\MobileDetectExtension
+
 services:
 	- App\Model\Products
 	- App\Model\Orders
@@ -37,3 +40,21 @@ services:
 	categoriesService: App\Model\Categories(@database.default.context)
 	bookingsService: App\Model\Bookings(@database.default.context)
 #	router: @App\RouterFactory::createRouter
+## Mobile detector
+mobileDetect:
+	redirect:
+		mobile:
+			isEnabled: true				## default false
+			host: http://m.site.com		## with scheme (http|https), default null, url validate
+			statusCode: 301				## default 302
+			action: redirect			## redirect, noRedirect, redirectWithoutPath
+		tablet:
+			isEnabled: false			## default false
+			host: http://t.site.com		## with scheme (http|https), default null, url validate
+			statusCode: 301				## default 302
+			action: redirect			## redirect, noRedirect, redirectWithoutPath
+		detectTabletAsMobile: true		## default false
+	switchDeviceView:
+		saveRefererPath: false			## default true
+										## true => redirectUrl = http://site.com/current/path
+										## false	=> redirectUrl = http://site.com

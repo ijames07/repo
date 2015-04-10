@@ -78,12 +78,17 @@ class ProductsPresenter extends BasePresenter {
 				->addRule(Form::FILLED, "Vlož čas vyzvednutí");
 		$form->addHidden("id", $this->product["id"]);
 		$form->addSubmit("send", "Připravit");
-		$form->onSuccess[] = callback($this, "orderFormSubmitted");
+		$form->onSuccess[] = callback($this, "orderFormSuccess");
 		return $form;
 	}
 	
-	public function orderFormSubmitted(Form $form) {
+	public function orderFormSuccess(Form $form) {
 		$values = $form->getValues();
+		$active = $this->getUser()->getIdentity()->__get('active');
+		if (!$active) {
+			$this->flashMessage('Váš účet ještě není aktivován. Aktivační odkaz najdete v emailu', 'error');
+			$this->redirect('Orders:');
+		}
 		$inserted = $this->context->ordersService->insertOrder(
 				$this->getUser()->getId(),
 				$values["id"],

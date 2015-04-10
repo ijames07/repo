@@ -14,6 +14,11 @@ class SignPresenter extends BasePresenter {
 	public $backlink = '';
 	
 	/**
+     * @var \IPub\MobileDetect\MobileDetect
+     */
+    protected $mobileDetect;
+	
+	/**
 	 * Sign-in form factory.
 	 * @return Nette\Application\UI\Form
 	 */

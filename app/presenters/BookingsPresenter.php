@@ -102,6 +102,11 @@ class BookingsPresenter extends BasePresenter {
 		if (empty($values["tables"]) || empty($values["time"])) {
 			$this->redirect('Bookings:');
 		}
+		$active = $this->getUser()->getIdentity()->__get('active');
+		if (!$active) {
+			$this->flashMessage('Váš účet ještě není aktivován. Aktivační odkaz najdete v emailu', 'error');
+			$this->redirect('Bookings:');
+		}
 		$table_id = intval($values["tables"]);
 		$time = intval($values["time"]);
 		$bookings = $this->context->bookingsService;
