@@ -1,0 +1,26 @@
+{layout '../@layoutMobile.latte'}
+{block title}Přihlášení{/block}
+{block content}
+<form action="{link Sign:neco}" method="post">
+	<fieldset>
+		<legend>Uživatelské údaje</legend>
+		<div data-role="fieldcontain">
+			<label for="login">Email</label>
+			<input name="login" id="login" data-clear-btn="true" placeholder="email" tabindex="1" />
+		</div>
+		<div data-role="fieldcontain">
+			<label for="pw">Heslo</label>
+			<input type="password" name="pw" id="pw" data-clear-btn="true" placeholder="heslo" tabindex="2" />
+		</div>
+	</fieldset>
+	<fieldset>
+		<div data-role="fieldcontain">
+			<label for="checkbox">Trvale přihlásit</label>
+			<input type="checkbox" checked="false" id="checkbox" name="permanent" />
+		</div>
+		<div data-role="fieldcontain">
+			<input type="submit" value="Přihlásit" />
+		</div>
+	</fieldset>
+</form>
+{/block}

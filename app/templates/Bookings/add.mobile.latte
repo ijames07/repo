@@ -1,0 +1,59 @@
+{block title}Rezervace stolu{/block}
+
+{block content}
+<label for='picker'>Datum rezervace</label>
+<input id="picker" type="text" data-role="date" data-inline="true">
+<label for='time'>Hodina rezervace (0-23)</label>
+<input id="time" type="number" value='18'>
+<div id='form'></div>
+{/block}
+{block script}
+    <link rel="stylesheet" href="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.css">
+    <script src="http://cdn.rawgit.com/jquery/jquery-ui/1.10.4/ui/jquery.ui.datepicker.js"></script>
+    <script id="mobile-datepicker" src="{$basePath}/js/jquery.mobile.datepicker.js"></script>
+	<script src="{$basePath}/js/datepicker-cs.js"></script>
+	<script type="text/javascript">
+		$.datepicker.setDefaults($.datepicker.regional["cs"]);
+		$('#picker').change(function() {
+			var date = $(this).val();
+			var hour = $('#time').val();
+			var timestamp = moment(date + " " + hour, 'DD.MM.YYYY HH').format('X');
+			if (timestamp < moment().format('X')) {
+				$('#form').empty();
+				$('#form').append('<p><strong>Na vybraný čas nelze rezervovat</strong></p>');
+			} else {
+				refresh(timestamp);
+			}
+		});
+		$('#time').change(function() {
+			var date = $('#picker').val();
+			var hour = $(this).val();
+			var timestamp = moment(date + " " + hour, 'DD.MM.YYYY HH').format('X');
+			refresh(timestamp);
+		});
+		function refresh(timestamp) {
+			$('#form').empty();
+			var jqxhr = $.ajax({ 
+							dataType: "json",
+							url: "/nette/www/bookings/free",
+							method: "POST",
+							cache: false,
+							data: { timestamp: timestamp }
+						})
+				.done(function(msg) {
+					$('#form').empty();
+					var form = '<form data-ajax="false" method="post" id="tables" action="' + {link Bookings:book} + '"><input type="hidden" name="time" value="' + timestamp + '">';
+					form += '<fieldset data-role="controlgroup"><legend>Výběr stolu</legend>';
+					
+					for (var i = 0; i < msg.length; i++) {
+						form += '<input' + (msg[i].free ? '' : ' disabled="disabled"') + ' type="radio" name="tables" id="' + msg[i].id + '" value="' + msg[i].id + '">\n\
+								<label for="' + msg[i].id + '">' + msg[i].seats + ' osoby' + (msg[i].smoking ? ', kuřácký':'') + 
+								(msg[i].indoor ? '' : ', terasa')  + '</label>';
+					}
+					form += '</fieldset><input type="submit" name="send" value="Zarezervovat"></form>';
+					$('#form').append($(form));
+					$('#tables').trigger('create');
+				});
+		}
+	</script>
+{/block}

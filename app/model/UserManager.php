@@ -119,19 +119,43 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 				));
 	}
 	
+	/** @return Nette\Database\Table\Selection */
+	public function userLetter($letter) {
+		if (empty($letter)) {
+			return;
+		}
+		return $this->database->table(self::TABLE_NAME)
+				->where('LOWER(' . self::COLUMN_SURNAME . ") LIKE LOWER('" . $letter . "%')");
+	}
+	
 	/** @return Nette\Database\ResultSet */
-	public function overallInfo(Nette\Utils\Paginator $paginator) {
-		return $this->database->query('	SELECT email, name, surname, "user".id, gender, registered,
-										SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS picked,
-										SUM(CASE WHEN solved IS NULL AND employee_id IS NULL AND "order".id IS NOT NULL THEN 1 ELSE 0 END) AS opened,
-										SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NULL THEN 1 ELSE 0 END) AS cancelled,
-										SUM(CASE WHEN solved IS NULL AND NOW() > (pickup_time + \'2 hour\'::INTERVAL) AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS left
-										FROM "user"
-										LEFT JOIN "order" ON ("user".id = "order".customer_id)
-										GROUP BY email, name, surname, "user".id, gender
-										ORDER BY surname, name LIMIT '.
-										$paginator->getLength() . ' OFFSET ' .
-										$paginator->getOffset());
+	public function overallInfo(Nette\Utils\Paginator $paginator, $letter = '') {
+		if ($letter != '') {
+			return $this->database->query('	SELECT email, name, surname, "user".id, gender, registered,
+								SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS picked,
+								SUM(CASE WHEN solved IS NULL AND employee_id IS NULL AND "order".id IS NOT NULL THEN 1 ELSE 0 END) AS opened,
+								SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NULL THEN 1 ELSE 0 END) AS cancelled,
+								SUM(CASE WHEN solved IS NULL AND NOW() > (pickup_time + \'2 hour\'::INTERVAL) AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS left
+								FROM "user"
+								LEFT JOIN "order" ON ("user".id = "order".customer_id)
+								WHERE LOWER(surname) LIKE ' . "LOWER('" . $letter . "%')" . '
+								GROUP BY email, name, surname, "user".id, gender
+								ORDER BY surname, name LIMIT '.
+								$paginator->getLength() . ' OFFSET ' .
+								$paginator->getOffset());
+		} else {
+			return $this->database->query('	SELECT email, name, surname, "user".id, gender, registered,
+											SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS picked,
+											SUM(CASE WHEN solved IS NULL AND employee_id IS NULL AND "order".id IS NOT NULL THEN 1 ELSE 0 END) AS opened,
+											SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NULL THEN 1 ELSE 0 END) AS cancelled,
+											SUM(CASE WHEN solved IS NULL AND NOW() > (pickup_time + \'2 hour\'::INTERVAL) AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS left
+											FROM "user"
+											LEFT JOIN "order" ON ("user".id = "order".customer_id)
+											GROUP BY email, name, surname, "user".id, gender
+											ORDER BY surname, name LIMIT '.
+											$paginator->getLength() . ' OFFSET ' .
+											$paginator->getOffset());
+		}
 	}
 }
 

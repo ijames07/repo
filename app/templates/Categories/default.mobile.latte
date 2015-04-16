@@ -1,0 +1,10 @@
+{block title}Kategorie{/block}
+{block content}
+<ul data-role="listview" data-inset="true">
+	{foreach $categories as $category}
+	<li>
+		<a data-ajax="true" n:href="Products:default $category->id">{$category->name}</a>
+	</li>
+	{/foreach}
+</ul>
+{/block}

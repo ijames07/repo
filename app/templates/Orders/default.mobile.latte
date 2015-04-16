@@ -1,0 +1,106 @@
+{block title}Objednávky{/block}
+
+{block content}
+	<div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+		{if count($prepared) > 0}
+		<div data-role="collapsible" data-collapsed="false">
+			<h3>Připravené k odběru</h3>
+			<ul data-role="listview">	
+			{foreach $prepared as $order}
+				<li>
+					<a href="">
+						<h1>{$order->ref('product_id')->name}</h1>
+						<p>Vytvořeno: {$order->creation_date|date:'j.n.Y G:i'}</p>
+						<p>Vyzvednutí v: {$order->pickup_time|date:'j.n.Y G:i'}</p>
+						<p>Připravil {$order->ref('employee_id')->surname}</p>
+					</a>
+				</li>
+			{/foreach}
+			</ul>
+		</div>
+		{/if}
+		{if count($opened) > 0}
+		<div data-role="collapsible" data-collapsed="false">
+			<h3>Ve frontě na přípravu</h3>
+			<ul data-role="listview" data-split-icon="delete">	
+			{foreach $opened as $order}
+				<li>
+					<a href="">
+						<h1>{$order->ref('product_id')->name}</h1>
+						<p>Vytvořeno: {$order->creation_date|date:'j.n.Y G:i'}</p>
+						<p>Vyzvednutí v: {$order->pickup_time|date:'j.n.Y G:i'}</p>
+					</a>
+				{if empty($order->employee_id)}
+					<a href="#cancelOrder{$order->id}" data-rel="popup" data-position-to="window" data-transition="pop">Zrušit</a>
+				</li>
+				<div data-role="popup" id="cancelOrder{$order->id}" data-dismissible="false" style="max-width:400px;">
+					<div data-role="header">
+						<h1>Zrušení objednávky</h1>
+					</div>
+					<div role="main" class="ui-content">
+						<h3 class="ui-title">Opravdu chceš stornovat tuto objednávku?</h3>
+						<p>Tuto akci nelze vrátit zpět.</p>
+						<a class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-rel="back" href="#">Zavřít</a>
+						<a data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" n:href="Orders:cancel $order->id">Stornovat objednávku</a>
+					</div>
+				</div>
+				{else}
+				</li>
+				{/if}
+			{/foreach}
+			</ul>
+		</div>
+		{/if}
+		{if count($unpicked) > 0 }
+		<div data-role="collapsible">
+			<h3>Nevyzvednuté</h3>
+			<ul data-role="listview">	
+			{foreach $unpicked as $order}
+				<li>
+					<h1>{$order->ref('product_id')->name}</h1>
+					<p>Vytvořeno: {$order->creation_date|date:'j.n.Y G:i'}</p>
+					<p>Vyzvednutí v: {$order->pickup_time|date:'j.n.Y G:i'}</p>
+					<p>Připravil {$order->ref('employee_id')->surname}</p>
+				</li>
+			{/foreach}
+			</ul>
+		</div>
+		{/if}
+		{if count($picked) > 0}
+		<div data-role="collapsible">
+			<h3>Vyzvednuté</h3>
+			<ul data-role="listview">	
+			{foreach $picked as $order}
+				<li>
+					<img src="{$basePath}/images/products/{$order->product_id}n.{$order->ref('product_id')->img_ext}" style="vertical-align: middle;"/>
+					<h1>{$order->ref('product_id')->name}</h1>
+					<p>Vytvořeno: {$order->creation_date|date:'j.n.Y G:i'}</p>
+					<p>Vyzvednutí v: {$order->pickup_time|date:'j.n.Y G:i'}</p>
+					<p>Vyzvednuto {$order->solved|date:'j.n.Y G:i'}</p>
+					<p>Obsloužil {$order->ref('employee_id')->surname}</p>
+				</li>
+			{/foreach}
+			</ul>
+		</div>
+		{/if}
+		{if count($cancelled) > 0}	
+		<div data-role="collapsible">
+			<h3>Stornované</h3>
+			<ul data-role="listview">	
+			{foreach $cancelled as $order}
+				<li>
+					<a href="">
+						<h1>{$order->ref('product_id')->name}</h1>
+						<p>Vytvořeno: {$order->creation_date|date:'j.n.Y G:i'}</p>
+						<p>Vyzvednutí v: {$order->pickup_time|date:'j.n.Y G:i'}</p>
+						<p>Zrušeno {$order->solved|date:'j.n.Y G:i'}</p>
+					</a>
+				</li>
+			{/foreach}
+			</ul>
+		</div>
+		{/if}
+	</div>
+{/block}
+{block script}
+{/block}

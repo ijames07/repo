@@ -1,0 +1,51 @@
+{block title}Rezervace{/block}
+
+{block content}
+<a n:href="Bookings:add" data-ajax="false" class="ui-btn ui-corner-all">Zarezervovat stůl</a>
+<div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+	<div data-role="collapsible" data-collapsed="false">
+		<h3>Nadcházející rezervace</h3>
+		<ul data-role="listview" data-split-icon="delete">
+			{foreach $followingBookings as $booking}
+				<li>
+					<a href="">
+						<p>Dne: {$booking->time|date:'j.n.Y G'} hod</p>
+						<p>Stůl {$booking->desk_id}: Míst: {$booking->ref('desk_id')->seats}, {$booking->ref('desk_id')->smoking ? 'kuřácký' : 'nekuřácký'}, {$booking->ref('desk_id')->indoor ? 'vnitřní' : 'venkovní'}</p>
+					</a>
+					<a href="#cancelBooking{$booking->id}" data-rel="popup" data-position-to="window">Zrušit</a>
+				</li>
+				<div data-role="popup" id="cancelBooking{$booking->id}" data-dismissible="false" style="max-width:400px;">
+					<div data-role="header">
+						<h1>Zrušení rezervace</h1>
+					</div>
+					<div role="main" class="ui-content">
+						<h3 class="ui-title">Opravdu chceš stornovat tuto rezervaci?</h3>
+						<p>Tuto akci nelze vrátit zpět.</p>
+						<a class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-rel="back" href="#">Zavřít</a>
+						<a data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" n:href="Bookings:cancel $booking->id">Stornovat rezervaci</a>
+					</div>
+				</div>
+			{/foreach}
+		</ul>
+	</div>
+	<div data-role="collapsible">
+		<h3>Minulé rezervace</h3>
+		<ul data-role="listview">
+			{foreach $previousBookings as $booking}
+				<li>
+					<p>
+						Dne: {$booking->time|date:'j.n.Y G'} hod<br />
+						<a href="#popupInfo{$booking->desk_id}" data-rel="popup">Stůl: {$booking->desk_id}</a>
+					</p>
+				</li>
+				<div data-role="popup" id="popupInfo{$booking->desk_id}" class="ui-content" data-theme="a" style="max-width:350px;">
+					<p>Míst: {$booking->ref('desk_id')->seats}, {$booking->ref('desk_id')->smoking ? 'kuřácký' : 'nekuřácký'}, {$booking->ref('desk_id')->indoor ? 'vnitřní' : 'venkovní'}</p>
+				</div>
+			{/foreach}
+		</ul>	
+	</div>
+</div>
+{/block}
+
+{block script}
+{/block}

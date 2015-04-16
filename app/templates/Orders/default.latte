@@ -120,7 +120,7 @@
 								Připraveno v: {$order->pickup_time|date:'G:i'}<br />
 							</div>
 							<div class=" col-xs-2 col-sm-2">
-								<a class="btn btn-danger btn-lg" data-toggle="modal" data-target="#{$order->id}">Zrušit</a>
+								<a class="btn btn-danger" data-toggle="modal" data-target="#{$order->id}">Zrušit</a>
 								<div class="modal" id="{$order->id}">
 									<div class="modal-dialog">
 										<div class="modal-content">
@@ -163,14 +163,17 @@
 									<img class="img img-responsive" src="{$basePath}/images/products/{$order->ref('product')->id}n.{$order->ref('product')->img_ext}" alt="{$order->ref('product')->name}" />
 								</div>
 							</div>
-							<div class="col-xs-5 col-sm-7">
+							<div class="col-xs-5 col-sm-5">
 								<div class="caption">
 									{$order->ref('product')->name}
 								</div>
-								Vytvořeno: {$order->creation_date|date:'j.n.Y G:i'}<br />
-								Připraveno v: {$order->pickup_time|date:'G:i'}<br />
+									<strong>Vytvořeno</strong><br />{$order->creation_date|date:'j.n.Y G:i'}<br />
+								<strong>Vyzvednutí</strong><br /> {$order->pickup_time|date:'G:i'}<br />
 							</div>
-							<div class=" col-xs-4 col-sm-3">
+							<div class=" col-xs-4 col-sm-5">
+								<div class="caption">.</div>
+								<strong>Připraveno</strong><br />{$order->prepared|date:'G:i'}<br />
+								<strong>Připravil</strong><br />{$order->ref('employee_id')->surname}
 							</div>
 						</div>
 						{/foreach}
@@ -196,16 +199,19 @@
 									<img class="img img-responsive" src="{$basePath}/images/products/{$order->ref('product')->id}n.{$order->ref('product')->img_ext}" alt="{$order->ref('product')->name}" />
 								</div>
 							</div>
-							<div class="col-xs-5 col-sm-7">
+							<div class="col-xs-5 col-sm-5">
 								<div class="caption">
 									{$order->ref('product')->name}
 								</div>
-								Vytvořeno: {$order->creation_date|date:'j.n.Y G:i'}<br />
-								Připraveno v: {$order->pickup_time|date:'G:i'}<br />
+								<strong>Vytvořeno</strong><br />{$order->creation_date|date:'j.n.Y G:i'}<br />
+								<strong>Připraveno</strong><br /> {$order->pickup_time|date:'G:i'}
 							</div>
-							<div class="col-xs-4 col-sm-3">
-								Vyzvednuto<br />
-								{$order->solved|date:'j.n.Y G:i'}
+							<div class="col-xs-4 col-sm-5">
+								<div class="caption">.</div>
+								<strong>Vyzvednuto</strong><br />
+								{$order->solved|date:'G:i'}<br />
+								<strong>Obsloužil</strong><br />
+								{$order->ref('employee_id')->surname}
 							</div>
 						</div>
 						{/foreach}
@@ -235,11 +241,12 @@
 								<div class="caption">
 									{$order->ref('product')->name}
 								</div>
-								Vytvořeno: {$order->creation_date|date:'j.n.Y G:i'}<br />
-								Připraveno v: {$order->pickup_time|date:'G:i'}<br />
+								<strong>Vytvořeno</strong><br />{$order->creation_date|date:'j.n.Y G:i'}<br />
+								<strong>Připraveno</strong><br />{$order->pickup_time|date:'G:i'}
 							</div>
 							<div class="col-xs-4 col-sm-3">
-								Zrušeno<br />{$order->solved|date:'j.n.Y G:i'}
+								<div class="caption">.</div>
+								<strong>Zrušeno</strong><br />{$order->solved|date:'G:i'}
 							</div>
 						</div>
 						{/foreach}

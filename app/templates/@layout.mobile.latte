@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{ifset #title}{include title|striptags} | {/ifset}Cat café</title>
+	<link rel="stylesheet" href="{$basePath}/s/jquery-mobile-bower/css/jquery.mobile-1.4.5.min.css" />
+	<link rel="stylesheet" href="{$basePath}/css/mobile.css" />
+	<script src="{$basePath}/s/jquery/dist/jquery.min.js"></script>
+	<script src="{$basePath}/s/jquery-mobile-bower/js/jquery.mobile-1.4.5.js"></script>
+	<link rel="shortcut icon" href="{$basePath}/favicon.ico" />
+	<meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1">
+	{block head}{/block}
+</head>
+
+<body>
+	<script> document.body.className+=' js' </script>
+	<div data-role="page" id="page" data-dom-cache="false">
+		<div data-role="header" data-position="fixed" data-fullscreen="false">
+			{if $user->isLoggedIn()}<a href="" data-rel="back" data-icon="back" data-add-back-btn="true" data-back-btn-text="Zpět">Zpět</a> {/if}
+			<h1>{ifset #title}{include title|striptags}{/ifset}</h1>
+			{if $user->isLoggedIn()}
+			<a class="ui-btn ui-btn-inline ui-icon-gear ui-btn-icon-notext" href="#menu" data-rel="popup">Akce</a>
+			<div data-role="popup" id="menu">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Možnosti</li>
+					<li><a href="#">Uživatel</a></li>
+					<li><a data-ajax="false" n:href="Sign:out">Odhlásit</a></li>
+				</ul>
+			</div>
+			{/if}
+		</div>
+		<div data-role="content">
+			{include #content}
+		</div>
+		<div data-role="footer" data-position="fixed" data-fullscreen="false">
+			<div data-role="navbar">
+				<ul>
+					{if $user->isLoggedIn()}
+					<li><a data-ajax="true" data-icon="bullets" n:href="Categories:" n:class="$presenter->isLinkCurrent('Products:*') ? ui-btn-active, $presenter->isLinkCurrent('Products:*') ? ui-state-persist, $presenter->isLinkCurrent('Categories:') ? ui-btn-active,$presenter->isLinkCurrent('Categories:') ? ui-state-persist">Produkty</a></li>
+					<li><a data-ajax="true" data-icon="shop" n:href="Orders:" n:class="$presenter->isLinkCurrent('Orders:') ? ui-btn-active, $presenter->isLinkCurrent('Orders:') ? ui-state-persist">Objednávky</a></li>
+					<li><a data-ajax="true" data-icon="calendar" n:href="Bookings:" n:class="$presenter->isLinkCurrent('Bookings:') ? ui-btn-active, $presenter->isLinkCurrent('Bookings:') ? ui-state-persist">Rezervace</a></li>
+					{else}
+					<li><a data-ajax="true" data-icon="user" n:href="Sign:in" n:class="$presenter->isLinkCurrent('Sign:') ? ui-btn-active, $presenter->isLinkCurrent('Sign:') ? ui-state-persist">Přihlášení</a></li>
+					<li><a data-ajax="true" data-icon="edit" n:href="Register:" n:class="$presenter->isLinkCurrent('Register:') ? ui-btn-active, $presenter->isLinkCurrent('Register:') ? ui-state-persist">Registrace</a></li>
+					{/if}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+<!-- javascript -->
+
+	<script src="{$basePath}/js/toast.js"></script>
+	<script src="{$basePath}/s/moment/min/moment.min.js"></script>
+	<script src="{$basePath}/s/moment/locale/cs.js"></script>
+	{if !empty($flashes)}
+		<script>
+		{foreach $flashes as $flash}
+			toast({$flash->message});
+		{/foreach}
+	</script>
+	{/if}
+	{ifset #script}{include script}{/ifset}
+</body>
+</html>

@@ -1,0 +1,46 @@
+{block title}Registrace{/block}
+{block content}
+<form action="{link Register:neco}" method="post" data-ajax="false">
+				<fieldset data-role="fieldcontain">
+					<legend>Nutné údaje</legend>
+					<div data-role="fieldcontain">
+						<label for="login">Emailový účet</label>
+						<input name="login" id="login" value="" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="pw">Heslo</label>
+						<input type="password" name="pw" id="pw" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="pwa">Heslo znovu</label>
+						<input type="password" name="pwa" id="pwa" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="name">Jméno</label>
+						<input name="name" id="name" value="" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="surname">Příjmení</label>
+						<input name="surname" id="surname" value="" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="gender">Pohlaví</label>
+						<select name="gender" id="gender" data-role="slider">
+							<option value="0">Žena</option>
+							<option value="1">Muž</option>
+						</select>
+						<!--<input type="checkbox" data-role="flipswitch" name="gender" id="gender" data-on-text="Žena" data-off-text="Muž" data-wrapper-class="custom-label-flipswitch">-->
+					</div>
+				</fieldset>
+				<fieldset data-role="controlgroup">
+					<legend>Přejete si zasílat informace o nabídkách?</legend>
+					<input type="radio" name="newsletter" value="1" id="yes"  />
+					<label for="yes">Ano</label>
+					<input type="radio" name="newsletter" value="0" id="no" />
+					<label for="no">Ne</label>
+				</fieldset>
+				<div data-role="fieldcontain">
+					<input type="submit" value="Vytvořit" />
+				</div>
+			</form>
+{/block}

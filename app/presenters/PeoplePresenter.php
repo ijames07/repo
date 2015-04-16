@@ -24,14 +24,23 @@ class PeoplePresenter extends BasePresenter {
 		}
 	}
 
-	public function actionDefault($id = 1) {
+	public function actionDefault($id = 1, $letter = '') {
 		$users = $this->context->usersService;
-		$paginator = new Nette\Utils\Paginator;
-		$paginator->setItemCount($this->context->getService('usersService')->usersCount()); // celkový počet položek (např. článků)
-		$paginator->setItemsPerPage(5); // počet položek na stránce
-		$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
-		$this->template->allUsers = $users->overallInfo($paginator);
-		$this->template->paginator = $paginator;
+		if ($letter != '') {
+			$paginator = new Nette\Utils\Paginator;
+			$paginator->setItemCount(count($users->userLetter($letter))); // celkový počet položek (např. článků)
+			$paginator->setItemsPerPage(5); // počet položek na stránce
+			$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
+			$this->template->allUsers = $users->overallInfo($paginator, $letter);
+			$this->template->paginator = $paginator;
+		} else {
+			$paginator = new Nette\Utils\Paginator;
+			$paginator->setItemCount($this->context->getService('usersService')->usersCount()); // celkový počet položek (např. článků)
+			$paginator->setItemsPerPage(5); // počet položek na stránce
+			$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
+			$this->template->allUsers = $users->overallInfo($paginator);
+			$this->template->paginator = $paginator;
+		}
 
 	}
 	

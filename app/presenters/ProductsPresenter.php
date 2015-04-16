@@ -11,7 +11,6 @@ use Nette,
  * Products presenter
  */
 class ProductsPresenter extends BasePresenter {
-
 	/** Pro uložení dat o produktu pro formuláře */
 	private $product;
 	private $products;
@@ -66,10 +65,17 @@ class ProductsPresenter extends BasePresenter {
 		$this->product = $this->products->getProduct($id);
 		$now = new Nette\Utils\DateTime();
 		// zohledneni doby pripravy do nejkratsi doby objednavky
-		$min = 15 * 60 > $this->product->preparation_time * 60 + 60 ? 15 * 60 : $this->product->preparation_time * 60 + 60;
+		// jestli priprava trva dyl jak 15 minut tak nastav aktualni hodnotu na 15 minut
+		if ($this->product->preparation_time * 60 + 5 * 60 > 15 * 60) {
+			$current = $this->product->preparation_time * 60 + 5 * 60;
+		} else {
+			// jinak nastav aktualni hodnotu na dobu pripravy + 5 minut
+			$current = 15 * 60;
+		}
+		$min = $this->product->preparation_time * 60 + 5 * 60;
 		$this["orderForm"]["time"]
 				->setAttribute('min', date('G:i', $now->getTimestamp() + $min))
-				->setDefaultValue(date('G:i', $now->getTimestamp() + $min));
+				->setDefaultValue(date('G:i', $now->getTimestamp() + $current));
 		$this->template->product = $this->product;
 	}
 	

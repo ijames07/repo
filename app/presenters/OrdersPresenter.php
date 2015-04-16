@@ -18,7 +18,7 @@ class OrdersPresenter extends BasePresenter {
 		}
 	}
 	
-	public function renderDefault($id = 1) {
+	public function actionDefault($id = 1) {
 		$orders = $this->context->ordersService;
 		$user_id = $this->getUser()->getId();
 		if ($this->getUser()->isInRole('customer')) {

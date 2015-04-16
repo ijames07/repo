@@ -12,20 +12,20 @@
 			<div class="col-lg-4 col-md-5 col-sm-3 col-xs-3 content">
 				<img class="img-responsive img-rounded" src="{$basePath}/images/products/{$product->id . 'n.' . $product->img_ext}" />
 			</div>
-			<div class="col-lg-8 col-md-7 col-sm-7 col-xs-7">
+			<div class="col-lg-8 col-md-7 col-sm-7 col-xs-6">
 				<div class="caption">
 					<a href="{if $user->isInRole('manager')}{link Products:edit $product->id}{else}{link Products:product $product->id}{/if}">{$product->name}</a>
 				</div>
 				<div class="description">
-					{$product->description|truncate:120}
+					{$product->description|truncate:60}
 					<div class="caption visible-md visible-lg">
-						<strong>{$product->price|number:2} Kč</strong>
+						<strong>{$product->price|number:2:',':' '} Kč</strong>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-2 hidden-md hidden-lg">
+			<div class="col-xs-3 hidden-md hidden-lg">
 				<div class="caption">
-					<strong>{$product->price|number:2} Kč</strong>
+					<strong>{$product->price|number:2:',':' '} Kč</strong>
 				</div>
 			</div>
 		</div>

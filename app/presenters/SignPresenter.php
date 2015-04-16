@@ -3,6 +3,7 @@
 namespace App\Presenters;
 
 use Nette,
+	Nette\Application\UI\Form,
 	Instante\Bootstrap3Renderer\BootstrapRenderer;
 
 /**
@@ -13,10 +14,6 @@ class SignPresenter extends BasePresenter {
 	/** @persistent */
 	public $backlink = '';
 	
-	/**
-     * @var \IPub\MobileDetect\MobileDetect
-     */
-    protected $mobileDetect;
 	
 	/**
 	 * Sign-in form factory.
@@ -26,9 +23,11 @@ class SignPresenter extends BasePresenter {
 		$form = new Nette\Application\UI\Form;
 		$form->setRenderer(new BootstrapRenderer);
 		$form->addText('username', 'Email:')
+				->addRule(Form::FILLED, 'Zadej prosím svůj email')
 				->setRequired('Zadej prosím svůj email');
 
 		$form->addPassword('password', 'Heslo:')
+				->addRule(Form::FILLED, 'Zadej prosím své heslo')
 				->setRequired('Zadej prosím své heslo');
 
 		$form->addCheckbox('remember', 'Zapamatuj si přihlášení');

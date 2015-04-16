@@ -1,0 +1,17 @@
+{block title}
+{if isset($category)}{$category}{else}Všechny produkty{/if}
+{/block}
+{block content}
+	<ul data-role="listview" data-inset="true" data-split-theme="a" data-filter="true" data-filter-placeholder="Filtruj">
+	{foreach $products as $product}
+		<li>
+			<a n:href="Products:product $product->id">
+				<img src="{$basePath}/images/products/{$product->id}n.{$product->img_ext}" />
+				<h2> {$product->name}</h2>
+				<p>{$product->description|truncate:120}</p>
+				<!--<p><strong>{$product->price|number:2:',':' '}</strong> Kč</p>-->
+			</a>
+		</li>
+	{/foreach}
+	</ul>
+{/block}

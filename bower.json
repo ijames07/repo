@@ -22,9 +22,8 @@
     "jquery": "~1.11.2",
     "respond-minmax": "~1.4.2",
     "toastr": "~2.1.0",
-    "nette.ajax.js": "~2.0.0",
     "eonasdan-bootstrap-datetimepicker": "4.7.14",
-    "jquery-mobile": "~1.4.5",
-    "jquery-mobile-bower": "~1.4.5"
+    "jquery-mobile-bower": "~1.4.5",
+    "nette-forms": "~2.3.1"
   }
 }

@@ -10,7 +10,7 @@ use Nette,
  * Error presenter.
  */
 class ErrorPresenter extends BasePresenter {
-
+	
 	/**
 	 * @param  Exception
 	 * @return void
