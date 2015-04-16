@@ -8,9 +8,9 @@
 <h2>Cena</h2>
 <p>{$product->price|number:2:',':' '} Kč</p>
 <h2>Vyzvednout v</h2>
-<form action="{link Products:neco}" method="post">
-	<input type="hidden" name="pid" value="{$product->id}" />
-	<input type="time" max="22:00:00.0" min="{date('G:i', time() + $product->preparation_time * 60 + 5 * 60)}" name="time" value="{date('G:i', time() + ($product->preparation_time * 60 + 5 * 60 > 15 * 60 ? $product->preparation_time * 60 + 5 * 60 : 15 * 60))}" /><br />
+<form action="{link Products:mobileOrderSubmitted}" method="post">
+	<input type="hidden" name="id" value="{$product->id}" />
+	<input type="time" min="{date('G:i', time() + $product->preparation_time * 60 + 5 * 60)}" name="time" value="{date('G:i', time() + ($product->preparation_time * 60 + 5 * 60 > 15 * 60 ? $product->preparation_time * 60 + 5 * 60 : 15 * 60))}" /><br />
 	<input type="submit" value="Objednat" />
 </form>	
 {/block}

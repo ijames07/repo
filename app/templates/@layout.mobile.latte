@@ -24,7 +24,7 @@
 				<ul data-role="listview" data-inset="true" style="min-width:210px;">
 					<li data-role="list-divider">Možnosti</li>
 					<li><a href="#">Uživatel</a></li>
-					<li><a data-ajax="false" n:href="Sign:out">Odhlásit</a></li>
+					<li><a n:href="Sign:out">Odhlásit</a></li>
 				</ul>
 			</div>
 			{/if}
@@ -38,9 +38,9 @@
 					{if $user->isLoggedIn()}
 					<li><a data-ajax="true" data-icon="bullets" n:href="Categories:" n:class="$presenter->isLinkCurrent('Products:*') ? ui-btn-active, $presenter->isLinkCurrent('Products:*') ? ui-state-persist, $presenter->isLinkCurrent('Categories:') ? ui-btn-active,$presenter->isLinkCurrent('Categories:') ? ui-state-persist">Produkty</a></li>
 					<li><a data-ajax="true" data-icon="shop" n:href="Orders:" n:class="$presenter->isLinkCurrent('Orders:') ? ui-btn-active, $presenter->isLinkCurrent('Orders:') ? ui-state-persist">Objednávky</a></li>
-					<li><a data-ajax="true" data-icon="calendar" n:href="Bookings:" n:class="$presenter->isLinkCurrent('Bookings:') ? ui-btn-active, $presenter->isLinkCurrent('Bookings:') ? ui-state-persist">Rezervace</a></li>
+					<li><a data-ajax="true" data-icon="calendar" n:href="Bookings:" n:class="$presenter->isLinkCurrent('Bookings:*') ? ui-btn-active, $presenter->isLinkCurrent('Bookings:*') ? ui-state-persist">Rezervace</a></li>
 					{else}
-					<li><a data-ajax="true" data-icon="user" n:href="Sign:in" n:class="$presenter->isLinkCurrent('Sign:') ? ui-btn-active, $presenter->isLinkCurrent('Sign:') ? ui-state-persist">Přihlášení</a></li>
+					<li><a data-ajax="true" data-icon="user" n:href="Sign:in" n:class="$presenter->isLinkCurrent('Sign:in') ? ui-btn-active, $presenter->isLinkCurrent('Sign:in') ? ui-state-persist">Přihlášení</a></li>
 					<li><a data-ajax="true" data-icon="edit" n:href="Register:" n:class="$presenter->isLinkCurrent('Register:') ? ui-btn-active, $presenter->isLinkCurrent('Register:') ? ui-state-persist">Registrace</a></li>
 					{/if}
 				</ul>

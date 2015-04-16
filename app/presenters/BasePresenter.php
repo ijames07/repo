@@ -13,6 +13,21 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	/** categories for menu */
 	private $categories;
 	
+	/**
+     * When working with jquery mobile ui, trick nette into thinking that nothing is ajax, when in fact everything
+     * *is* ajax. The reason for it: we need to redirect with http codes, not with snippet-updating mechanism, which
+     * should be disabled for all requests - jquery mobile framework handles these things on it's own.
+     *
+     * @return bool
+     */
+    public function isAjax() {
+        if (!$this->mobileDetect->isMobile() && $this->getUser()->isInRole('customer')) {
+			return false;
+		} else {
+			parent::isAjax();
+		}
+    }
+	
 	protected function startup() {
 		parent::startup();
 		if ($this->getUser()->isInRole('manager')) {
@@ -35,7 +50,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	
 	protected function beforeRender() {
 		// pracovni slozka je app/templates/
-		if (!$this->mobileDetect->isMobile() && $this->getUser()->isInRole('customer')) { // if mobile, set mobile templates
+		if (!$this->mobileDetect->isMobile()) {// && $this->getUser()->isInRole('customer')) { // if mobile, set mobile templates
 			$this->setView($this->getView() . '.mobile');
 			$this->setLayout('layout.mobile');
 		} else {

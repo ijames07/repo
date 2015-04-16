@@ -44,6 +44,10 @@ class SignPresenter extends BasePresenter {
 			$this->redirect("Orders:");
 		}
 	}
+	
+	public function actionDefault() {
+		$this->redirect('Sign:in');
+	}
 
 	public function signInFormSucceeded($form, $values) {
 		if ($values->remember) {
@@ -68,4 +72,31 @@ class SignPresenter extends BasePresenter {
 		$this->redirect('Homepage:');
 	}
 
+	public function actionMobileSignSubmitted() {
+		$post = $this->request->getPost();
+		if (empty($post["username"]) || empty($post["password"])) {
+			$this->flashMessage('Nepovedlo se přihlásit', 'error');
+			$this->redirect('Sign:in');
+		}
+		if (!empty($post["permanent"]) && $post["permanent"] == 'on') {
+			$this->getUser()->setExpiration('14 days', FALSE);
+		} else {
+			$this->getUser()->setExpiration('20 minutes');
+		}
+		
+		try {
+			$this->getUser()->login($post["username"],$post["password"]);
+			if ($this->getUser()->isLoggedIn()) {
+				$this->flashMessage('Přihlášení proběhlo úspěšně', 'success');
+				$this->restoreRequest($this->backlink);
+				$this->redirect('Orders:');
+			} else {
+				$this->flashMessage('Přihlášení se nezdařilo', 'error');
+				$this->redirect('Sign:in');
+			}
+		} catch (Nette\Security\AuthenticationException $e) {
+			$form->addError($e->getMessage());
+		}
+	}
+	
 }

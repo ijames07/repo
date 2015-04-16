@@ -111,6 +111,25 @@ class ProductsPresenter extends BasePresenter {
 		}
 	}
 	
+	public function actionMobileOrderSubmitted() {
+		$post = $this->request->getPost();
+		if (empty($post["time"]) || empty($post["id"])) {
+			$this->flashMessage('Nepodařilo se objednat produkt', 'error');
+			$this->redirect('Products:');
+		}
+		$inserted = $this->context->ordersService->insertOrder(
+				$this->getUser()->getId(),
+				$post["id"],
+				$post["time"]
+			);
+		if ($inserted) {
+			$this->flashMessage("Objednávka byla zaregistrována. "
+				. "Nezapomeňte si ji dnes přijít vyzvednout v " . date("G:i",
+				strtotime($post["time"])), 'success');
+			$this->redirect('Orders:');
+		}
+	}
+	
 	public function actionEdit($product = 0) {
 		if ($product == 0) {
 			$this->redirect("Products:");

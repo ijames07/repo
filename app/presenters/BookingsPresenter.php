@@ -70,7 +70,11 @@ class BookingsPresenter extends BasePresenter {
 	
 	public function actionFree() {
 		$timestamp = $this->request->getPost('timestamp')['timestamp'];
-		if (!$this->isAjax() || empty($timestamp)) {
+		$ajax = $this->isAjax();
+		$mobil = $this->mobileDetect->isMobile();
+		if ((!$this->isAjax() && $this->mobileDetect->isMobile()) || 
+				($this->isAjax() && !$this->mobileDetect->isMobile()) || 
+				empty($timestamp)) {
 			$this->terminate();
 		}
 		$bookings = $this->context->bookingsService;
