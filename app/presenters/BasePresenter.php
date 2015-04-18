@@ -50,7 +50,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	
 	protected function beforeRender() {
 		// pracovni slozka je app/templates/
-		if (!$this->mobileDetect->isMobile()) {// && $this->getUser()->isInRole('customer')) { // if mobile, set mobile templates
+		if ($this->mobileDetect->isMobile() && $this->getUser()->isInRole('customer')) { // if mobile, set mobile templates
 			$this->setView($this->getView() . '.mobile');
 			$this->setLayout('layout.mobile');
 		} else {

@@ -84,7 +84,8 @@ class BookingsPresenter extends BasePresenter {
 		foreach ($takenTables as $table => $row) {
 			array_push($bookedTables, $row->desk_id);
 		}
-		$freeTables = $bookings->getAllTables()
+		$freeTables = $this->context->getService('desksService')->getAll()
+				->where("active", true)
 				->where('id NOT IN (?)', $bookedTables);
 		foreach ($freeTables as $table => $row ) {
 			array_push($response, array(
@@ -117,6 +118,11 @@ class BookingsPresenter extends BasePresenter {
 		if (!$active) {
 			$this->flashMessage('Váš účet ještě není aktivován. Aktivační odkaz najdete v emailu', 'error');
 			$this->redirect('Bookings:');
+		}
+		$blocked = $this->getUser()->getIdentity()->__get('blocked');
+		if ($blocked) {
+			$this->flashMessage('Váš účet byl zablokován z důvodu nevyzvedávání produktů. Pro další info kontaktujte zaměstnance.', 'error');
+			$this->redirect('Orders:');
 		}
 		$table_id = intval($values["tables"]);
 		$time = intval($values["time"]);

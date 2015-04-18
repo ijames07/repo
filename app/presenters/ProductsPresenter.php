@@ -98,6 +98,11 @@ class ProductsPresenter extends BasePresenter {
 			$this->flashMessage('Váš účet ještě není aktivován. Aktivační odkaz najdete v emailu', 'error');
 			$this->redirect('Orders:');
 		}
+		$blocked = $this->getUser()->getIdentity()->__get('blocked');
+		if ($blocked) {
+			$this->flashMessage('Váš účet byl zablokován z důvodu nevyzvedávání produktů. Pro další info kontaktujte zaměstnance.', 'error');
+			$this->redirect('Orders:');
+		}
 		$inserted = $this->context->ordersService->insertOrder(
 				$this->getUser()->getId(),
 				$values["id"],
@@ -116,6 +121,16 @@ class ProductsPresenter extends BasePresenter {
 		if (empty($post["time"]) || empty($post["id"])) {
 			$this->flashMessage('Nepodařilo se objednat produkt', 'error');
 			$this->redirect('Products:');
+		}
+		$active = $this->getUser()->getIdentity()->__get('active');
+		if (!$active) {
+			$this->flashMessage('Váš účet ještě není aktivován. Aktivační odkaz najdete v emailu', 'error');
+			$this->redirect('Orders:');
+		}
+		$blocked = $this->getUser()->getIdentity->__get('blocked');
+		if ($blocked) {
+			$this->flashMessage('Váš účet byl zablokován z důvodu nevyzvedávání produktů. Pro další kontaktujte zaměstnance.', 'error');
+			$this->redirect('Orders:');
 		}
 		$inserted = $this->context->ordersService->insertOrder(
 				$this->getUser()->getId(),
@@ -217,6 +232,7 @@ class ProductsPresenter extends BasePresenter {
 		$values = $form->getValues();
 		$data = array(
 			'ingredients'	=> $values["ingredients"],
+			'manager_id'	=> $this->getUser()->getId(),
 			'description'	=> $values["description"],
 			'price'			=> str_replace(',', '.', $values["price"]),
 			'preparation_time'=> $values["time"],
@@ -233,6 +249,7 @@ class ProductsPresenter extends BasePresenter {
 		$current_cat = array(); // current product categories
 		if (isset($values["product_id"])) {
 			$data["id"] = $values["product_id"];
+			$data["manager_id"] = $this->getUser()->getId();
 			$product = $this->products->updateProduct($data);
 			$categories = $this->products->getCategories($values["product_id"]);
 			foreach ($categories as $category => $row) {
@@ -268,7 +285,6 @@ class ProductsPresenter extends BasePresenter {
 			$image->resize(80, 80);
 			$image->save('images/products/' . $product_id . 'n.' . $data["img_ext"]);
 			$fileExts = array_diff(['gif', 'png', 'jpg'], array($data["img_ext"]));
-			while(false) {}
 			foreach ($fileExts as $fileExt) {
 				@unlink('images/products/' . $product_id . '.' . $fileExt);
 				@unlink('images/products/' . $product_id . 'n.' . $fileExt);

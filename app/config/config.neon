@@ -36,6 +36,7 @@ services:
 	- App\RouterFactory
 	ordersService: App\Model\Orders(@database.default.context)
 	usersService: App\Model\UserManager(@database.default.context)
+	desksService: App\Model\Desks(@database.default.context)
 	productsService: App\Model\Products(@database.default.context)
 	categoriesService: App\Model\Categories(@database.default.context)
 	bookingsService: App\Model\Bookings(@database.default.context)

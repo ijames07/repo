@@ -3,7 +3,7 @@
 	<h1 n:block="title" class="hidden-xs">{if $presenter->getParameter('letter') != NULL} Uživatelé jejichž příjmení začíná na {$presenter->getParameter('letter')}{else}Všichni uživatelé{/if}</h1>
 	{if $user->isInRole('manager')}
 	<div class="row">
-		<a class="btn btn-default col-xs-12" href="{plink People:add}" style="margin-bottom: 10px;">Přidat zaměstnance</a>
+		<a class="btn btn-default col-xs-12" href="{plink People:add}" style="margin-bottom: 10px;">Změnit oprávnění</a>
 	</div>
 	{/if}
 	<div class="row">
@@ -49,7 +49,7 @@
 				<th>Příjmení</th>
 				<th>Jméno</th>
 				<th>Email</th>
-				<th>Pohlaví</th>
+				<th>Zablokován</th>
 				<th>Registrován</th>
 				<th>Ratio</th>
 				<th>Detail</th>
@@ -61,7 +61,7 @@
 						<td>{$user->surname}</td>
 						<td>{$user->name}</td>
 						<td>{$user->email}</td>
-						<td>{$user->gender ? 'muž' : 'žena'}</td>
+						<td>{$user->blocked ? 'ano' : 'ne'}</td>
 						<td>{$user->registered|date:'j.n.Y'}</td>
 						<td>{if $user->picked > 0 || $user->left > 0}{$user->picked / ($user->picked + $user->left) |number:2:',':' '}{else}1{/if}</td>
 						<td><a n:href="People:detail $user->id">Detail</a></td>

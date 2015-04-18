@@ -19,6 +19,7 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 			COLUMN_SURNAME = "surname",
 			COLUMN_NEWSLETTER = "newsletter",
 			COLUMN_ACTIVE = "active",
+			COLUMN_BLOCKED = 'blocked',
 			COLUMN_GENDER = "gender",
 			COLUMN_ROLE = 'role';
 
@@ -115,7 +116,7 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 		return $this->database->table(self::TABLE_NAME)
 				->where(self::COLUMN_ID, intval($data->employee))
 				->update(array(
-					self::COLUMN_ROLE => $data->role ? 'manager' : 'employee'
+					self::COLUMN_ROLE => $data->role == 1 ? 'manager' : ($data->role == 0? 'employee' : 'customer')
 				));
 	}
 	
@@ -128,10 +129,27 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 				->where('LOWER(' . self::COLUMN_SURNAME . ") LIKE LOWER('" . $letter . "%')");
 	}
 	
+	/** @return int */
+	public function toggleBlocked($id) {
+		if (empty($id)) {
+			return;
+		}
+		$user = $this->database->table(self::TABLE_NAME)
+				->get($id);
+		if (empty($user)) {
+			return;
+		}
+		return $this->database->table(self::TABLE_NAME)
+				->where(self::COLUMN_ID, $id)
+				->update(array(
+					self::COLUMN_BLOCKED => $user->blocked ? false : true
+				));
+	}
+	
 	/** @return Nette\Database\ResultSet */
-	public function overallInfo(Nette\Utils\Paginator $paginator, $letter = '') {
+	public function overallManagerInfo(Nette\Utils\Paginator $paginator, $letter = '') {
 		if ($letter != '') {
-			return $this->database->query('	SELECT email, name, surname, "user".id, gender, registered,
+			return $this->database->query('	SELECT email, blocked, name, surname, "user".id, gender, registered,
 								SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS picked,
 								SUM(CASE WHEN solved IS NULL AND employee_id IS NULL AND "order".id IS NOT NULL THEN 1 ELSE 0 END) AS opened,
 								SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NULL THEN 1 ELSE 0 END) AS cancelled,
@@ -144,13 +162,44 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 								$paginator->getLength() . ' OFFSET ' .
 								$paginator->getOffset());
 		} else {
-			return $this->database->query('	SELECT email, name, surname, "user".id, gender, registered,
+			return $this->database->query('	SELECT email, blocked, name, surname, "user".id, gender, registered,
 											SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS picked,
 											SUM(CASE WHEN solved IS NULL AND employee_id IS NULL AND "order".id IS NOT NULL THEN 1 ELSE 0 END) AS opened,
 											SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NULL THEN 1 ELSE 0 END) AS cancelled,
 											SUM(CASE WHEN solved IS NULL AND NOW() > (pickup_time + \'2 hour\'::INTERVAL) AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS left
 											FROM "user"
 											LEFT JOIN "order" ON ("user".id = "order".customer_id)
+											GROUP BY email, name, surname, "user".id, gender
+											ORDER BY surname, name LIMIT '.
+											$paginator->getLength() . ' OFFSET ' .
+											$paginator->getOffset());
+		}
+	}
+	
+	/** @return Nette\Database\ResultSet */
+	public function overallEmployeeInfo(Nette\Utils\Paginator $paginator, $letter = '') {
+		if ($letter != '') {
+			return $this->database->query('	SELECT email, blocked, name, surname, "user".id, gender, registered,
+								SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS picked,
+								SUM(CASE WHEN solved IS NULL AND employee_id IS NULL AND "order".id IS NOT NULL THEN 1 ELSE 0 END) AS opened,
+								SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NULL THEN 1 ELSE 0 END) AS cancelled,
+								SUM(CASE WHEN solved IS NULL AND NOW() > (pickup_time + \'2 hour\'::INTERVAL) AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS left
+								FROM "user"
+								LEFT JOIN "order" ON ("user".id = "order".customer_id)
+								WHERE LOWER(surname) LIKE ' . "LOWER('" . $letter . "%') AND role = 'customer'" . '
+								GROUP BY email, name, surname, "user".id, gender
+								ORDER BY surname, name LIMIT '.
+								$paginator->getLength() . ' OFFSET ' .
+								$paginator->getOffset());
+		} else {
+			return $this->database->query('	SELECT email, blocked, name, surname, "user".id, gender, registered,
+											SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS picked,
+											SUM(CASE WHEN solved IS NULL AND employee_id IS NULL AND "order".id IS NOT NULL THEN 1 ELSE 0 END) AS opened,
+											SUM(CASE WHEN solved IS NOT NULL AND employee_id IS NULL THEN 1 ELSE 0 END) AS cancelled,
+											SUM(CASE WHEN solved IS NULL AND NOW() > (pickup_time + \'2 hour\'::INTERVAL) AND employee_id IS NOT NULL THEN 1 ELSE 0 END) AS left
+											FROM "user"
+											LEFT JOIN "order" ON ("user".id = "order".customer_id)
+											WHERE role = \'customer\'
 											GROUP BY email, name, surname, "user".id, gender
 											ORDER BY surname, name LIMIT '.
 											$paginator->getLength() . ' OFFSET ' .

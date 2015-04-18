@@ -10,7 +10,7 @@
 	{foreach $products as $product}
 		<div class="col-md-3 col-sm-6 col-xs-12 thumbnail product">
 			<div class="col-lg-4 col-md-5 col-sm-3 col-xs-3 content">
-				<img class="img-responsive img-rounded" src="{$basePath}/images/products/{$product->id . 'n.' . $product->img_ext}" />
+				<img class="img-responsive img-rounded" alt="obrázek {$product->name}" src="{$basePath}/images/products/{$product->id . 'n.' . $product->img_ext}" />
 			</div>
 			<div class="col-lg-8 col-md-7 col-sm-7 col-xs-6">
 				<div class="caption">

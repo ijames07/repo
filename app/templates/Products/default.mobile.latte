@@ -6,7 +6,7 @@
 	{foreach $products as $product}
 		<li>
 			<a n:href="Products:product $product->id">
-				<img src="{$basePath}/images/products/{$product->id}n.{$product->img_ext}" />
+				<img src="{$basePath}/images/products/{$product->id}n.{$product->img_ext}" alt="obrázek {$product->name}"/>
 				<h2> {$product->name}</h2>
 				<p>{$product->description|truncate:120}</p>
 				<!--<p><strong>{$product->price|number:2:',':' '}</strong> Kč</p>-->

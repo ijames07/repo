@@ -10,6 +10,7 @@
 			Přijímá newsletter: {$userDetails->newsletter ? 'ano' : 'ne'}<br />
 		</p>
 		{if $userDetails->role == 'customer'}
+			{if count($picked) + count($opened) + count($prepared) + count($unpicked) + count($cancelled) > 0}
 		Celkem objednávek: {count($picked) + count($opened) + count($prepared) + count($unpicked) + count($cancelled)}<br />
 		Ratio: <strong>{$ratio}</strong><br />
 		<h4>Stavy objednávek</h4>
@@ -24,7 +25,11 @@
 			<li>Nejčastěji objednávaný produkt: {$favouriteProduct->name}: {$favouriteProduct->count}</li>
 			<li>Nejčastěji objednávaná kategorie: {$favouriteCategory->name}: {$favouriteCategory->count}</li>
 		</ul>
+		{else}
+			Zákazník zatím nemá žádné rezervace<br />
+		{/if}
 		Celkem rezervací: {count($bookings)}
+		<a n:class="btn, $userDetails->blocked ? btn-success : btn-danger" n:href="People:toggleBlocked $userDetails->id">{if $userDetails->blocked}Odblokovat{else}Zablokovat{/if}</a>
 	{elseif $userDetails->role == 'employee'}
 		Obsloužil celkem lidí: {count($served)}
 	{/if}

@@ -1,0 +1,26 @@
+{block content}
+<div class="container">
+	<h1 n:block="title" class="hidden-xs">Přehled stolů</h1>
+	<div class="row">
+		<a class="btn btn-default col-xs-12" href="{plink Desks:add}">Přidat nový stůl</a>
+	</div>
+	<div class="row">
+		<table class="table table-striped table-hover">
+			<thead>
+				<th>Stůl</th>
+				<th></th>
+				<th></th>
+			</thead>
+			<tbody>
+			{foreach $desks as $desk}
+				<tr>
+					<td><a n:href="Desks:edit $desk->id">{$desk->id}: {$desk->seats} osoby{$desk->smoking ? ', kuřácký':''} {$desk->indoor ? '' : ', terasa'}</a></td>
+					<td><a n:href="Desks:edit $desk->id" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Upravit</a></td>
+					<td><a n:href="Desks:toggleActive $desk->id" class="btn btn-default">{if $desk->active}Deaktivovat{else}Aktivovat{/if}</a></td>
+				</tr>
+			{/foreach}
+			</tbody>
+		</table>
+	</div>
+</div>
+{/block}

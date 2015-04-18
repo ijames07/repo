@@ -17,6 +17,7 @@ class Products extends \Nette\Object {
 			COLUMN_IMG_EXT = "img_ext",
 			COLUMN_CAT = 'category_id',
 			COLUMN_PROD = 'product_id',
+			COLUMN_MANAGER = 'manager_id',
 			COLUMN_PRICE = "price",
 			COLUMN_TIME = 'preparation_time',
 			COLUMN_NAME = "name",
