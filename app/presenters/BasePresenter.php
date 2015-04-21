@@ -21,10 +21,10 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
      * @return bool
      */
     public function isAjax() {
-        if (!$this->mobileDetect->isMobile() && $this->getUser()->isInRole('customer')) {
+        if ($this->mobileDetect->isMobile() && $this->getUser()->isInRole('customer')) {
 			return false;
 		} else {
-			parent::isAjax();
+			return parent::isAjax();
 		}
     }
 	

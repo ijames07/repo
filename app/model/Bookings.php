@@ -27,7 +27,7 @@ class Bookings extends \Nette\Object {
 		$this->database->table(self::TABLE_BOOKING)->insert(array(
 			self::COLUMN_CUSTOMER	=>	$user,
 			self::COLUMN_TIME		=>	date('c', $time),
-			self::COLUMN_DESK		=> $table_id
+			self::COLUMN_DESK		=>	$table_id
 		));
 	}
 
@@ -60,7 +60,7 @@ class Bookings extends \Nette\Object {
 			return;
 		}
 		return $this->database->table(self::TABLE_BOOKING)
-				->where(self::COLUMN_TIME . " < NOW() + INTERVAL '2 hours'")
+				->where("NOW() + INTERVAL 2 HOUR > " . self::COLUMN_TIME)
 				->where(self::COLUMN_CUSTOMER, $user)
 				->order(self::COLUMN_TIME . ' DESC');
 	}

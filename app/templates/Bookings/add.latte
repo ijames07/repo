@@ -25,14 +25,14 @@
 			$('#form').empty();
 			var jqxhr = $.ajax({ 
 							dataType: "json",
-							url: "/nette/www/bookings/free",
+							url: {link Bookings:free},
 							method: "POST",
 							cache: false,
 							data: { timestamp: timestamp }
 						})
 				.done(function(msg) {
 					$('#form').empty();
-					$form = $('<form class="form-horizontal" method="post" id="tables" action="/nette/www/bookings/book"><input type="hidden" name="time" value="' + timestamp + '"></form>');
+					$form = $('<form class="form-horizontal" method="post" id="tables" action={link Bookings:book}><input type="hidden" name="time" value="' + timestamp + '"></form>');
 					var content = '<label class="control-label col-sm-2">Výběr stolu</label><div class="col-sm-10">';
 					
 					for (var i = 0; i < msg.length; i++) {

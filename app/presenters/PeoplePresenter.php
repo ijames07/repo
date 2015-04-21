@@ -84,12 +84,13 @@ class PeoplePresenter extends BasePresenter {
 		
 		$orders = $this->context->getService('ordersService');
 		if ($this->template->userDetails->role == 'customer') {
-			$this->template->favouriteProduct = $orders->getMostOrderedProduct($id)->fetch();
-			$this->template->favouriteCategory = $orders->getMostOrderedCategory($id)->fetch();
+			$this->template->favouriteProducts = $orders->getMostOrderedProduct($id);
+			$this->template->favouriteCategories = $orders->getMostOrderedCategory($id);
 			$this->template->picked = $orders->getPicked($id);
 			$this->template->unpicked = $orders->getUnpicked($id);
 			$this->template->cancelled = $orders->getCancelled($id);
 			$this->template->opened = $orders->getOpened($id);
+			$this->template->unprepared = $orders->getUnprepared($id);
 			$this->template->prepared = $orders->getPrepared($id);
 			$this->template->bookings = $this->context->bookingsService->getAll()->where('customer_id', $id);
 			if (count($this->template->picked) != 0 || count($this->template->unpicked) != 0) {

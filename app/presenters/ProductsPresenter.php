@@ -127,7 +127,7 @@ class ProductsPresenter extends BasePresenter {
 			$this->flashMessage('Váš účet ještě není aktivován. Aktivační odkaz najdete v emailu', 'error');
 			$this->redirect('Orders:');
 		}
-		$blocked = $this->getUser()->getIdentity->__get('blocked');
+		$blocked = $this->getUser()->getIdentity()->__get('blocked');
 		if ($blocked) {
 			$this->flashMessage('Váš účet byl zablokován z důvodu nevyzvedávání produktů. Pro další kontaktujte zaměstnance.', 'error');
 			$this->redirect('Orders:');

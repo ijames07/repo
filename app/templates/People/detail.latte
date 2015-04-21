@@ -20,18 +20,31 @@
 			<li>Připravováno: {count($prepared)}</li>
 			<li><strong>Nevyzvednuto:</strong> {count($unpicked)}</li>
 			<li>Zrušeno: {count($cancelled)}</li>
+			<li>Nepřipravené {count($unprepared)}</li>
 		</ul>
 		<ul>
-			<li>Nejčastěji objednávaný produkt: {$favouriteProduct->name}: {$favouriteProduct->count}</li>
-			<li>Nejčastěji objednávaná kategorie: {$favouriteCategory->name}: {$favouriteCategory->count}</li>
+			<li>Nejčastěji objednávané produkty:
+				<ol>
+					{foreach $favouriteProducts as $product}
+						<li>{$product->name}, {$product->pocet}×</li>
+					{/foreach}
+				</ol>
+			</li>
+			<li>Nejčastěji objednávaná kategorie:
+				<ol>
+					{foreach $favouriteCategories as $category}
+						<li>{$category->name}, {$category->pocet}</li>
+					{/foreach}
+				</ol>
+			</li>
 		</ul>
 		{else}
-			Zákazník zatím nemá žádné rezervace<br />
+			Zákazník zatím nemá žádné objednávky<br />
 		{/if}
-		Celkem rezervací: {count($bookings)}
+		Celkem rezervací: {count($bookings)}<br />
 		<a n:class="btn, $userDetails->blocked ? btn-success : btn-danger" n:href="People:toggleBlocked $userDetails->id">{if $userDetails->blocked}Odblokovat{else}Zablokovat{/if}</a>
 	{elseif $userDetails->role == 'employee'}
-		Obsloužil celkem lidí: {count($served)}
+		Zaměstnanec obsloužil celkem {count($served)} lidí.
 	{/if}
 	</div>
 </div>

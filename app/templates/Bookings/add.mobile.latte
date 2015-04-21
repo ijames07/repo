@@ -14,6 +14,7 @@
 	<script src="{$basePath}/js/datepicker-cs.js"></script>
 	<script type="text/javascript">
 		$.datepicker.setDefaults($.datepicker.regional["cs"]);
+		//$('#picker').trigger('create');
 		$('#picker').change(function() {
 			var date = $(this).val();
 			var hour = $('#time').val();
@@ -35,7 +36,7 @@
 			$('#form').empty();
 			var jqxhr = $.ajax({ 
 							dataType: "json",
-							url: "/nette/www/bookings/free",
+							url: {link Bookings:free},
 							method: "POST",
 							cache: false,
 							data: { timestamp: timestamp }

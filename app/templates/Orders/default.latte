@@ -309,8 +309,6 @@ function refresh() {
 			//data: { ts: now}
 		})
 		.done(function(orders) {
-			//now = moment.unix(data.now).format('X');
-			console.log(orders);
 			$('#orders').empty();
 			for (var i = 0; i < orders.length; i++) {
 				var $tr = $('<tr class="preparation" data-id="' + orders[i].id +

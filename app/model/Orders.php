@@ -69,7 +69,7 @@ class Orders extends \Nette\Object {
 		return $this->database->table(self::TABLE_NAME)
 				->where(self::COLUMN_CUSTOMER, $id)
 				->where(self::COLUMN_SOLVED . ' IS NULL')
-				->where(self::COLUMN_PICKUP . " > NOW() - INTERVAL '8 hours'")
+				->where(self::COLUMN_PICKUP . ' > NOW() - INTERVAL 8 HOUR')
 				->where(self::COLUMN_EMPLOYEE . ' IS NULL');
 	}
 	
@@ -81,7 +81,7 @@ class Orders extends \Nette\Object {
 		return $this->database->table(self::TABLE_NAME)
 				->where(self::COLUMN_ID, $values["order_id"])
 				->update(array(
-					'solved'	=> date('c', $values["solved"])
+					self::COLUMN_SOLVED	=> date('c', $values["solved"])
 				));
 	}
 
@@ -94,7 +94,7 @@ class Orders extends \Nette\Object {
 				->where(self::COLUMN_CUSTOMER, $id)
 				->where(self::COLUMN_SOLVED . ' IS NULL')
 				->where(self::COLUMN_EMPLOYEE . ' IS NOT NULL')
-				->where("NOW() > " . self::COLUMN_PICKUP . " + INTERVAL '2 hours'");
+				->where("NOW() > " . self::COLUMN_PICKUP . " + INTERVAL 2 HOUR");
 	}
 	
 	/** @return Nette\Database\Table\Selection All currently prepared orders */
@@ -106,7 +106,7 @@ class Orders extends \Nette\Object {
 				->where(self::COLUMN_CUSTOMER, $id)
 				->where(self::COLUMN_SOLVED . ' IS NULL')
 				->where(self::COLUMN_EMPLOYEE . ' IS NOT NULL')
-				->where("NOW() < " . self::COLUMN_PICKUP . " + INTERVAL '2 hours'");
+				->where("NOW() < " . self::COLUMN_PICKUP . " + INTERVAL 2 HOUR");
 	}
 	
 	/** @return Nette\Database\Table\Selection All cancelled orders */
@@ -136,6 +136,7 @@ class Orders extends \Nette\Object {
 				));
 	}
 	
+	/** @return Nette\Database\Table\Selection */
 	public function getServed($user) {
 		if (empty($user)) {
 			return;
@@ -146,11 +147,24 @@ class Orders extends \Nette\Object {
 	}
 	
 	/** @return Nette\Database\Table\Selection */
+	public function getUnprepared($id) {
+		if (empty($id)) {
+			return;
+		} else {
+			return $this->database->table(self::TABLE_NAME)
+					->where(self::COLUMN_CUSTOMER, $id)
+					->where(self::COLUMN_EMPLOYEE . ' IS NULL')
+					->where(self::COLUMN_SOLVED . ' IS NULL')
+					->where(self::COLUMN_PICKUP . ' < NOW() + INTERVAL 12 HOUR');
+		}
+	}
+	
+	/** @return Nette\Database\Table\Selection */
 	public function getOrdersForProcessing($ts = '') {
 		if ($ts == '') {
 			return $this->database->table(self::TABLE_NAME)
 					->where(self::COLUMN_SOLVED . ' IS NULL')
-					->where(self::COLUMN_CREATION . " >= NOW() - INTERVAL '8 hours'")
+					->where(self::COLUMN_CREATION . " >= (NOW() - INTERVAL 8 HOUR)")
 					->order(self::COLUMN_PICKUP . ' ASC');
 		} else {
 			$date = date('c', $ts);
@@ -191,28 +205,48 @@ class Orders extends \Nette\Object {
 	/** @return Nette\Database\ResultSet */
 	public function getMostOrderedProduct($user) {
 		if (empty($user)) {
-			return;
+			// nejcasteji objednavane produkty
+			return $this->database->query('	SELECT `product`.`name`, COUNT(*) AS `pocet` FROM `order`
+											JOIN `product` ON (`order`.`product_id` = `product`.`id`)
+											GROUP BY `product`.`name`
+											ORDER BY `pocet` DESC');
+		} else {
+			// 3 nejcasteji objednavane produkty uzivatele
+			return $this->database->query('	SELECT `product`.`name`, COUNT(*) AS `pocet` FROM `order`
+											JOIN `product` ON (`order`.`product_id` = `product`.`id`)
+											WHERE `customer_id` = ? 
+											GROUP BY `product`.`name`
+											ORDER BY `pocet` DESC
+											LIMIT 3', $user);
 		}
-		return $this->database->query('	SELECT product.name, COUNT(*) FROM "order"
-										JOIN product ON ("order".product_id = product.id)
-										WHERE customer_id = ' . $user . '
-										GROUP BY product.name
-										ORDER BY COUNT DESC
-										LIMIT 1');
 	}
 	
 	/** @return Nette\Database\ResultSet */
 	public function getMostOrderedCategory($user) {
 		if (empty($user)) {
-			return;
+			// Nejcasteji objednavane kategorie
+			return $this->database->query('	SELECT `category`.`name`, COUNT(*) AS `pocet` FROM `order`
+											JOIN `product` ON (`order`.`product_id` = `product`.`id`)
+											JOIN `category_product` ON (`product`.`id` = `category_product`.`product_id`)
+											JOIN `category` ON (`category_product`.`category_id` = `category`.`id`)
+											GROUP BY `category`.`name`
+											ORDER BY `pocet` DESC');
+		} else {
+			// 3 nejcasteji objednavane kategorie uzivatele
+			return $this->database->query('	SELECT `category`.`name`, COUNT(*) AS `pocet` FROM `order`
+											JOIN `product` ON (`order`.`product_id` = `product`.`id`)
+											JOIN `category_product` ON (`product`.`id` = `category_product`.`product_id`)
+											JOIN `category` ON (`category_product`.`category_id` = `category`.`id`)
+											WHERE `customer_id` = ? 
+											GROUP BY `category`.`name`
+											ORDER BY `pocet` DESC
+											LIMIT 3', $user);
+			/** SELECT `category`.`name`, COUNT(DISTINCT `order`.`id`) AS `pocet` FROM `order`
+JOIN `product` ON (`order`.`product_id` = `product`.`id`)
+JOIN `category_product` ON (`product`.`id` = `category_product`.`product_id`)
+JOIN `category` ON (`category_product`.`category_id` = `category`.`id`)
+WHERE `customer_id` = 3 AND `order`.`product_id`= `product`.`id`
+ORDER BY `pocet` DESC**/
 		}
-		return $this->database->query('	SELECT category.name, COUNT(*) FROM "order"
-										JOIN product ON ("order".product_id = product.id)
-										JOIN category_product ON (product.id = category_product.product_id)
-										JOIN category ON (category_product.category_id = category.id)
-										WHERE customer_id = ' . $user . '
-										GROUP BY category.name
-										ORDER BY COUNT DESC
-										LIMIT 1');
 	}
 }

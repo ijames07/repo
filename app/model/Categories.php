@@ -41,6 +41,9 @@ class Categories extends \Nette\Object {
 	
 	/** @return boolean */
 	public function updateCategory($name = "", $id = 0) {
+		if ($name == "" || $id == 0) {
+			return;
+		}
 		return $this->database->table(self::TABLE_NAME)
 				->where(self::COLUMN_ID, $id)
 				->update(array(
