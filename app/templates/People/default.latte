@@ -21,8 +21,8 @@
 					<a n:href="People:default 1, 'G'" n:class="$presenter->getParameter('letter') == 'G' ? active, btn, btn-default">G</a>
 					<a n:href="People:default 1, 'H'" n:class="$presenter->getParameter('letter') == 'H' ? active, btn, btn-default">H</a>
 					<a n:href="People:default 1, 'CH'" n:class="$presenter->getParameter('letter') == 'CH' ? active, btn, btn-default">CH</a>
-					<a n:href="People:default 1, 'I'" n:class="$presenter->getParameter('letter') == 'J' ? active, btn, btn-default">I</a>
-					<a n:href="People:default 1, 'J'" n:class="$presenter->getParameter('letter') == 'L' ? active, btn, btn-default">J</a>
+					<a n:href="People:default 1, 'I'" n:class="$presenter->getParameter('letter') == 'I' ? active, btn, btn-default">I</a>
+					<a n:href="People:default 1, 'J'" n:class="$presenter->getParameter('letter') == 'J' ? active, btn, btn-default">J</a>
 					<a n:href="People:default 1, 'K'" n:class="$presenter->getParameter('letter') == 'K' ? active, btn, btn-default">K</a>
 					<a n:href="People:default 1, 'L'" n:class="$presenter->getParameter('letter') == 'L' ? active, btn, btn-default">L</a>
 					<a n:href="People:default 1, 'M'" n:class="$presenter->getParameter('letter') == 'M' ? active, btn, btn-default">M</a>
@@ -78,10 +78,12 @@
 					</a>
 				</li>
 				{/if}
+				{if $paginator->getPageCount() > 1}
 				{for $i = 1; $i <= $paginator->getLastPage(); $i++}
 					<li n:class="$presenter->getParameter('id') == $i ? active, $presenter->getParameter('id') == NULL && $i == 1 ? active"><a n:href="People:default $i, $presenter->getParameter('letter') != NULL ? $presenter->getParameter('letter')">{$i}</a></li>
 				{/for}
-				{if !($presenter->getParameter('id') == $paginator->getLastPage())}
+				{/if}
+				{if !($presenter->getParameter('id') == $paginator->getLastPage()) && !($paginator->getPageCount() < 2)}
 				<li>
 					<a n:href="People:default ($presenter->getParameter('id') != NULL ? ($presenter->getParameter('id') + 1) : 2), $presenter->getParameter('letter') != NULL ? $presenter->getParameter('letter')" aria-label="Další">
 						<span aria-hidden="true">&raquo;</span>

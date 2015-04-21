@@ -157,9 +157,9 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 								SUM(CASE WHEN `solved` IS NULL AND NOW() > (`pickup_time` + INTERVAL 2 HOUR) AND `employee_id` IS NOT NULL THEN 1 ELSE 0 END) AS `left`
 								FROM `user`
 								LEFT JOIN `order` ON (`user`.`id` = `order`.`customer_id`)
-								WHERE LOWER(`surname`) LIKE ' . "LOWER('?%')" . '
+								WHERE LOWER(`surname`) LIKE ' . " LOWER('" . $letter . "%') " . '
 								GROUP BY `email`, `name`, `surname`, `user`.`id`, `gender`
-								ORDER BY `surname`, `name` LIMIT ? OFFSET ?', $letter, $paginator->getLength(), $paginator->getOffset());
+								ORDER BY `surname`, `name` LIMIT ? OFFSET ?', $paginator->getLength(), $paginator->getOffset());
 		} else {
 			return $this->database->query('	SELECT `email`, `blocked`, `name`, `surname`, `user`.`id`, `gender`, `registered`,
 											SUM(CASE WHEN `solved` IS NOT NULL AND `employee_id` IS NOT NULL THEN 1 ELSE 0 END) AS `picked`,

@@ -88,7 +88,7 @@ class RegisterPresenter extends BasePresenter {
 				->setSubject('Aktivace účtu Cat Café')
 				->setBody("Dobrý den,\nvaše registrace byla přijata. Pro aktivac"
 						. "i účtu klikněte prosím na následující odkaz:\nhttp://"
-						. "localhost/nette/www/register/activate?mail=$user&hash"
+						. "cafe.php5.cz/register/activate?mail=$user&hash"
 						. "=$hash");
 		$mailer = new SendmailMailer;
 		$mailer->send($mail);

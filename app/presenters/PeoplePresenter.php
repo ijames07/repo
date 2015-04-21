@@ -28,18 +28,26 @@ class PeoplePresenter extends BasePresenter {
 		$users = $this->context->usersService;
 		if ($letter != '') {
 			$paginator = new Nette\Utils\Paginator;
-			$paginator->setItemCount(count($users->userLetter($letter))); // celkový počet položek (např. článků)
 			$paginator->setItemsPerPage(5); // počet položek na stránce
-			$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
 			if ($this->getUser()->isInRole('manager')) {
+				$paginator->setItemCount(count($users->userLetter($letter))); // celkový počet položek (např. článků)
+				$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
 				$this->template->allUsers = $users->overallManagerInfo($paginator, $letter);
 			} else {
+				$poc = count($users->userLetter($letter)->where('role', 'customer'));
+				$paginator->setItemCount($poc); // celkový počet položek (např. článků)
+				$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
 				$this->template->allUsers = $users->overallEmployeeInfo($paginator, $letter);
 			}
 			$this->template->paginator = $paginator;
 		} else {
 			$paginator = new Nette\Utils\Paginator;
-			$paginator->setItemCount($this->context->getService('usersService')->usersCount()); // celkový počet položek (např. článků)
+			if ($this->getUser()->isInRole('manager')) {
+				$paginator->setItemCount($this->context->getService('usersService')->usersCount()); // celkový počet položek (např. článků)
+			} else {
+				$paginator->setItemCount(count($this->context->getService('usersService')->getAll()->where('role', 'customer'))); // celkový počet položek (např. článků)
+			}
+			
 			$paginator->setItemsPerPage(5); // počet položek na stránce
 			$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
 			if ($this->getUser()->isInRole('manager')) {
