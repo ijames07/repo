@@ -15,7 +15,7 @@
 <body>
 	<script> document.body.className+=' js' </script>
 	<div data-role="page" id="page" data-dom-cache="false">
-		<div data-role="header" data-position="fixed" data-fullscreen="false">
+		<div data-role="header" data-fullscreen="false">
 			{if $user->isLoggedIn()}<a href="" data-rel="back" data-icon="back" data-add-back-btn="true" data-back-btn-text="Zpět">Zpět</a> {/if}
 			<h1>{ifset #title}{include title|striptags}{/ifset}</h1>
 			{if $user->isLoggedIn()}
