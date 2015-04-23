@@ -165,11 +165,13 @@ class Orders extends \Nette\Object {
 			return $this->database->table(self::TABLE_NAME)
 					->where(self::COLUMN_SOLVED . ' IS NULL')
 					->where(self::COLUMN_CREATION . " >= (NOW() - INTERVAL 8 HOUR)")
+					->where('customer.blocked = ?', false)
 					->order(self::COLUMN_PICKUP . ' ASC');
 		} else {
 			$date = date('c', $ts);
 			return $this->database->table(self::TABLE_NAME)
 					->where(self::COLUMN_SOLVED . ' IS NULL')
+					->where('customer.blocked = ?', false)
 					->where(self::COLUMN_CREATION . " >= ? OR " . self::COLUMN_PREPARED . " >= ?", $date, $date)
 					->order(self::COLUMN_PICKUP . ' ASC');
 		}
