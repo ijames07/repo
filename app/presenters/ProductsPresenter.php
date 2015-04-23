@@ -74,8 +74,8 @@ class ProductsPresenter extends BasePresenter {
 		}
 		$min = $this->product->preparation_time * 60 + 5 * 60;
 		$this["orderForm"]["time"]
-				->setAttribute('min', date('G:i', $now->getTimestamp() + $min))
-				->setDefaultValue(date('G:i', $now->getTimestamp() + $current));
+				->setAttribute('min', date('H:i', $now->getTimestamp() + $min))
+				->setDefaultValue(date('H:i', $now->getTimestamp() + $current));
 		$this->template->product = $this->product;
 	}
 	

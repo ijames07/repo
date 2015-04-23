@@ -13,6 +13,7 @@ class Bookings extends \Nette\Object {
 			COLUMN_ID = 'id',
 			COLUMN_TIME = 'time',
 			COLUMN_DESK = 'desk_id',
+			COLUMN_FINISHED = 'finished',
 			COLUMN_CUSTOMER = 'customer_id';
 	
 	public function __construct(Nette\Database\Context $database) {
@@ -26,11 +27,31 @@ class Bookings extends \Nette\Object {
 		}
 		$this->database->table(self::TABLE_BOOKING)->insert(array(
 			self::COLUMN_CUSTOMER	=>	$user,
-			self::COLUMN_TIME		=>	date('c', $time),
+			self::COLUMN_TIME		=>	date('c', floor($time/3600) * 3600),
 			self::COLUMN_DESK		=>	$table_id
 		));
 	}
-
+	
+	/** @retun Nette\Database\Table\Selection */
+	public function getTodaysBookings() {
+		return $this->database->table(self::TABLE_BOOKING)
+				->where(self::COLUMN_TIME . ' BETWEEN CURDATE() AND CURDATE() + INTERVAL 1 DAY')
+				->where(self::COLUMN_FINISHED, false)
+				->order(self::COLUMN_TIME . ' ASC');
+	}	
+	
+	/** @return int */
+	public function finish($id) {
+		if (empty($id)) {
+			return;
+		}
+		return $this->database->table(self::TABLE_BOOKING)
+				->where(self::COLUMN_ID, $id)
+				->update(array(
+					self::COLUMN_FINISHED => true
+				));
+	}
+	
 	/** @return Nette\Database\Table\Selection */
 	public function getReservedTables($timestamp) {
 		if (empty($timestamp)) {

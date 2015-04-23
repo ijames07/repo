@@ -39,27 +39,29 @@
 					{/foreach}
 				</tbody>
 			</table>
-			<nav style="text-align:center;">
-				<ul class="pagination">
-					{if !$presenter->getParameter('id') == NULL}
-					<li>
-						<a n:href="Orders:default ($presenter->getParameter('id') - 1)" aria-label="Předchozí">
-							<span aria-hidden="true">&laquo;</span>
-						</a>
-					</li>
-					{/if}
-					{for $i = 1; $i <= $paginator->getLastPage(); $i++}
-						<li n:class="$presenter->getParameter('id') == $i ? active, $presenter->getParameter('id') == NULL && $i == 1 ? active"><a n:href="Orders:default $i">{$i}</a></li>
-					{/for}
-					{if !($presenter->getParameter('id') == $paginator->getLastPage())}
-					<li>
-						<a n:href="Orders:default ($presenter->getParameter('id') != NULL ? ($presenter->getParameter('id') + 1) : 2)" aria-label="Další">
-							<span aria-hidden="true">&raquo;</span>
-						</a>
-					</li>
-					{/if}
-				</ul>
-			</nav>
+			{if !empty($paginator)}
+				<nav style="text-align:center;">
+					<ul class="pagination">
+						{if !$presenter->getParameter('id') == NULL}
+						<li>
+							<a n:href="Orders:default ($presenter->getParameter('id') - 1)" aria-label="Předchozí">
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+						{/if}
+						{for $i = 1; $i <= $paginator->getLastPage(); $i++}
+							<li n:class="$presenter->getParameter('id') == $i ? active, $presenter->getParameter('id') == NULL && $i == 1 ? active"><a n:href="Orders:default $i">{$i}</a></li>
+						{/for}
+						{if !($presenter->getParameter('id') == $paginator->getLastPage())}
+						<li>
+							<a n:href="Orders:default ($presenter->getParameter('id') != NULL ? ($presenter->getParameter('id') + 1) : 2)" aria-label="Další">
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+						{/if}
+					</ul>
+				</nav>
+			{/if}
 		</div>
 	{elseif $user->isInRole('customer')}
 	<div class="row">
@@ -257,6 +259,42 @@
 		</div>
 	</div>
 	{else}
+	{if $presenter->getParameter('user') != ''}
+			<table class="table table-striped table-hover">
+				<thead>
+					<th>Čas vytvoření</th>
+					<th>Produkt</th>
+					<th>Zákazník</th>
+					<th>Dokončeno</th>
+					<th>Obsloužil</th>
+					<th>Stav</th>
+				</thead>
+				<tbody>
+					{foreach $orders as $order}
+						<tr>
+							<td>{$order->creation_date|date:'j.n.Y G:i'}</td>
+							<td>{$order->ref('product_id')->name}</td>
+							<td><a href="{link People:detail $order->customer_id}">{$order->ref('customer_id')->email}</a></td>
+							<td>{$order->solved|date:'G:i'}</td>
+							<td>{if !empty($order->employee_id)}<a n:href="People:detail $order->employee_id">{$order->ref('employee_id')->name . ' ' . $order->ref('employee_id')->surname}</a>{/if}</td>
+							<td>
+								{if !empty($order->solved) && !empty($order->employee_id)}
+									Vyzvednutá
+								{elseif empty($order->solved) && empty($order->employee_id)}
+									Otevřená
+								{elseif empty($order->employee) && !empty($order->solved)}
+									Zrušená
+								{elseif empty($order->solved) && !empty($order->employee_id) && time() > strtotime($order->pickup_time) + 60 * 60 * 3}
+									Nevyzvednutá
+								{elseif !empty($order->employee_id) && empty($order->solved) && time() < strtotime($order->pickup_time) + 60 * 60 * 3} 
+									V přípravě
+								{/if}
+							</td>
+						</tr>
+					{/foreach}
+				</tbody>
+			</table>
+	{else}
 	<div class="row">
 		<table class="table table-striped table-hover">
 			<thead>
@@ -276,7 +314,7 @@
 				<tr class="preparation" data-id="{$order->id}">
 					<td>
 					{if !empty($order->employee_id)}
-						<a href="#" onclick="finish({$order->id});" class="btn btn-success">Dokončit</a>
+						<a href="#" onclick="finish({$order->id});$(this).closest('tr').fadeOut();" class="btn btn-success">Dokončit</a>
 					{/if}
 					</td>
 					<td><img class="img img-responsive" src="{$basePath}/images/products/{$order->product_id}n.{$order->ref('product_id')->img_ext}" /></td>
@@ -287,7 +325,7 @@
 					<td>{empty($order->employee_id) ? '' : $order->ref('employee_id')->surname}</td>
 					<td>
 					{if empty($order->employee_id)}
-						<a href="#" onclick="prepare({$order->id});" class="btn btn-info">Připravit</a>
+						<a href="#" onclick="prepare({$order->id});$(this).closest('tr').fadeOut();" class="btn btn-info">Připravit</a>
 					{/if}
 					</td>
 				</tr>	
@@ -295,24 +333,23 @@
 			</tbody>
 		</table>
 	</div>
+		{/if}
 	{/if}
 </div>
 {/block}
 {block script}
 {if $user->isInRole('employee')}
 <script type="text/javascript">
-	//var now = moment().format('X');
 function refresh() {
 	$.ajax({link Orders:refresh}, {
 			cache: false,
 			method: "POST",
-			//data: { ts: now}
 		})
 		.done(function(orders) {
 			$('#orders').empty();
 			for (var i = 0; i < orders.length; i++) {
 				var $tr = $('<tr class="preparation" data-id="' + orders[i].id +
-						'"><td>' + (orders[i].employee != "" ? '<button onclick="finish(' + orders[i].id + ');" class="btn btn-success">Dokončit</button>' : '') + '</td>'
+						'"><td>' + (orders[i].employee != "" ? '<button onclick="finish(' + orders[i].id + ');$(this).closest(\'tr\').fadeOut();" class="btn btn-success">Dokončit</button>' : '') + '</td>'
 						+ '<td>' + '<img class="img img-responsive" src="' + {$basePath} + '/images/products/' + orders[i].product_id + 'n.' + orders[i].img_ext + '" />' + '</td>'
 						+ '<td>' + orders[i].product + '</td>'
 						+ '<td>' + "<a href=" + {link People:detail}+ "/" + orders[i].customer_id + '>'
@@ -320,13 +357,10 @@ function refresh() {
 						'<td>' + orders[i].creation_date + '</td>' +
 						'<td><strong>' + orders[i].pickup_time + '</strong></td>' +
 						'<td>' + orders[i].employee + '</td>' +
-						'<td>' + (orders[i].employee == "" ? '<button onclick="prepare(' + orders[i].id + ');" class="btn btn-info">Připravit</button>' : '') + '</td>'
+						'<td>' + (orders[i].employee == "" ? '<button onclick="prepare(' + orders[i].id + ');$(this).closest(\'tr\').fadeOut();" class="btn btn-info">Připravit</button>' : '') + '</td>'
 						+ '</tr>');
 				$('#orders').append($tr);
 			}
-			$('.preparation').click(function() {
-				$(this).fadeOut();
-			});
 		});
 }
 
@@ -346,9 +380,6 @@ function finish(id) {
 		});
 }
 $(document).ready(function() {
-	$('.preparation').click(function() {
-		$(this).fadeOut();
-	});
 	setInterval(function() {
 		refresh();
 	}, 3000);

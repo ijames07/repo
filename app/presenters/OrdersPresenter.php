@@ -18,7 +18,7 @@ class OrdersPresenter extends BasePresenter {
 		}
 	}
 	
-	public function actionDefault($id = 1) {
+	public function actionDefault($page = 1, $user = '') {
 		$orders = $this->context->ordersService;
 		$user_id = $this->getUser()->getId();
 		if ($this->getUser()->isInRole('customer')) {
@@ -29,14 +29,23 @@ class OrdersPresenter extends BasePresenter {
 			$this->template->opened = $orders->getOpened($user_id);
 		} else if($this->getUser()->isInRole('manager')) {
 			$orders = $this->context->getService('ordersService');
-			$paginator = new Nette\Utils\Paginator;
-			$paginator->setItemCount(count($orders->getAll())); // celkový počet rezervací
-			$paginator->setItemsPerPage(15); // počet položek na stránce
-			$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
-			$this->template->orders = $orders->getAll($paginator);
-			$this->template->paginator = $paginator;
+			if ($user != '') {
+				$this->template->orders = $orders->getAll()->where('customer_id', $user);
+			} else {
+				$paginator = new Nette\Utils\Paginator;
+				$paginator->setItemsPerPage(15); // počet položek na stránce
+				$paginator->setItemCount(count($orders->getAll())); // celkový počet rezervací
+				$paginator->setPage($page); // číslo aktuální stránky, číslováno od 1
+				$this->template->orders = $orders->getAll($paginator);
+				$this->template->paginator = $paginator;
+			}
 		} else {
-			$this->template->orders = $this->context->ordersService->getOrdersForProcessing();
+			if ($user != '') {
+				$this->template->orders = $this->context->ordersService->getAll()
+						->where('customer_id', $user);
+			} else {
+				$this->template->orders = $this->context->ordersService->getOrdersForProcessing();
+			}
 		}
 	}
 	

@@ -13,14 +13,16 @@
 			{if count($picked) + count($opened) + count($prepared) + count($unpicked) + count($cancelled) > 0}
 		Celkem objednávek: {count($picked) + count($opened) + count($prepared) + count($unpicked) + count($cancelled)}<br />
 		Ratio: <strong>{$ratio}</strong><br />
+		<a class="btn btn-default" n:href="Orders:default NULL, $userDetails->id">Uživatelovy objednávky</a>
+		<a class="btn btn-default" n:href="Bookings:default NULL, $userDetails->id">Uživatelovy rezervace</a>
 		<h4>Stavy objednávek</h4>
 		<ul>
-			<li><strong>Vyzvednuto:</strong> {count($picked)}</li>
-			<li>Objednáno: {count($opened)}</li>
-			<li>Připravováno: {count($prepared)}</li>
-			<li><strong>Nevyzvednuto:</strong> {count($unpicked)}</li>
-			<li>Zrušeno: {count($cancelled)}</li>
-			<li>Nepřipravené {count($unprepared)}</li>
+			<li>Aktuálně objednáno: {count($opened)}</li>
+			<li><strong>Vyzvednuté:</strong> {count($picked)}</li>
+			<li>Připravované: {count($prepared)}</li>
+			<li><strong>Nevyzvednuté:</strong> {count($unpicked)}</li>
+			<li>Zrušené: {count($cancelled)}</li>
+			<li>Nepřipravené: {count($unprepared)}</li>
 		</ul>
 		<ul>
 			<li>Nejčastěji objednávané produkty:
@@ -41,7 +43,11 @@
 		{else}
 			Zákazník zatím nemá žádné objednávky<br />
 		{/if}
+		{if count($bookings) == 0}
+		Zákazník zatím nemá žádné rezervace<br />
+		{else}
 		Celkem rezervací: {count($bookings)}<br />
+		{/if}
 		<a n:class="btn, $userDetails->blocked ? btn-success : btn-danger" n:href="People:toggleBlocked $userDetails->id">{if $userDetails->blocked}Odblokovat{else}Zablokovat{/if}</a>
 	{elseif $userDetails->role == 'employee'}
 		Zaměstnanec obsloužil celkem {count($served)} lidí.

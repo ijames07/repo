@@ -23,24 +23,36 @@ class BookingsPresenter extends BasePresenter {
 		}
 	}
 	
-	public function actionDefault($id = 1) {
-		if ($this->getUser()->isInRole('employee')) {
-			$this->redirect('Bookings:add');
-		}
+	public function actionDefault($id = 1, $user = '') {
 		if ($this->getUser()->isInRole('customer')) {
 			$this->template->followingBookings = $this->context->bookingsService
 					->getFollowingBookings($this->getUser()->getId());
 			$this->template->previousBookings = $this->context->bookingsService
 					->getPreviousBookings($this->getUser()->getId());
-		} else {
+		} else if ($this->getUser()->isInRole('employee')) {
+			if ($user != '') {
+				$this->template->bookings = $this->context->getService('bookingsService')
+						->getAll()
+						->where('customer_id', $user);
+			} else {
+				$this->template->bookings = $this->context->getService('bookingsService')
+						->getTodaysBookings();
+			}
+		} else  {
 			// manager
 			$bookings = $this->context->getService('bookingsService');
-			$paginator = new Nette\Utils\Paginator;
-			$paginator->setItemCount(count($bookings->getAll())); // celkový počet rezervací
-			$paginator->setItemsPerPage(15); // počet položek na stránce
-			$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
-			$this->template->bookings = $bookings->getAll($paginator);
-			$this->template->paginator = $paginator;
+			if ($user != '') {
+				$this->template->bookings = $this->context->getService('bookingsService')
+						->getAll()
+						->where('customer_id', $user);
+			} else {
+				$paginator = new Nette\Utils\Paginator;
+				$paginator->setItemCount(count($bookings->getAll())); // celkový počet rezervací
+				$paginator->setItemsPerPage(15); // počet položek na stránce
+				$paginator->setPage($id); // číslo aktuální stránky, číslováno od 1
+				$this->template->bookings = $bookings->getAll($paginator);
+				$this->template->paginator = $paginator;
+			}
 		}
 	}
 	
@@ -64,6 +76,19 @@ class BookingsPresenter extends BasePresenter {
 			$this->flashMessage('Rezervace stornována', 'success');
 		} else {
 			$this->flashMessage('Rezervaci již nelze stornovat', 'error');
+		}
+		$this->redirect('Bookings:');
+	}
+	
+	public function actionFinish($id) {
+		if (empty($id) || !$this->getUser()->isInRole('employee')) {
+			$this->redirect('Bookings:');
+		}
+		$result =  $this->context->getService('bookingsService')->finish($id);
+		if ($result == 1) {
+			$this->flashMessage('Dokončeno', 'success');
+		} else {
+			$this->flashMessage('Nepodařilo se dokončit', 'success');
 		}
 		$this->redirect('Bookings:');
 	}
