@@ -11,35 +11,34 @@
 		</p>
 		{if $userDetails->role == 'customer'}
 			{if count($picked) + count($opened) + count($prepared) + count($unpicked) + count($cancelled) > 0}
-		Celkem objednávek: {count($picked) + count($opened) + count($prepared) + count($unpicked) + count($cancelled)}<br />
-		Ratio: <strong>{$ratio}</strong><br />
-		<a class="btn btn-default" n:href="Orders:default NULL, $userDetails->id">Uživatelovy objednávky</a>
-		<a class="btn btn-default" n:href="Bookings:default NULL, $userDetails->id">Uživatelovy rezervace</a>
-		<h4>Stavy objednávek</h4>
-		<ul>
-			<li>Aktuálně objednáno: {count($opened)}</li>
-			<li><strong>Vyzvednuté:</strong> {count($picked)}</li>
-			<li>Připravované: {count($prepared)}</li>
-			<li><strong>Nevyzvednuté:</strong> {count($unpicked)}</li>
-			<li>Zrušené: {count($cancelled)}</li>
-			<li>Nepřipravené: {count($unprepared)}</li>
-		</ul>
-		<ul>
-			<li>Nejčastěji objednávané produkty:
-				<ol>
-					{foreach $favouriteProducts as $product}
-						<li>{$product->name}, {$product->pocet}×</li>
-					{/foreach}
-				</ol>
-			</li>
-			<li>Nejčastěji objednávaná kategorie:
-				<ol>
-					{foreach $favouriteCategories as $category}
-						<li>{$category->name}, {$category->pocet}</li>
-					{/foreach}
-				</ol>
-			</li>
-		</ul>
+				Celkem objednávek: {count($picked) + count($opened) + count($prepared) + count($unpicked) + count($cancelled)}<br />
+				Ratio: <strong>{$ratio}</strong><br />
+				<a class="btn btn-default" n:href="Orders:default NULL, $userDetails->id">Uživatelovy objednávky</a>
+				<h4>Stavy objednávek</h4>
+				<ul>
+					<li>Aktuálně objednáno: {count($opened)}</li>
+					<li><strong>Vyzvednuté:</strong> {count($picked)}</li>
+					<li>Připravované: {count($prepared)}</li>
+					<li><strong>Nevyzvednuté:</strong> {count($unpicked)}</li>
+					<li>Zrušené: {count($cancelled)}</li>
+					<li>Nepřipravené: {count($unprepared)}</li>
+				</ul>
+				<ul>
+					<li>Nejčastěji objednávané produkty:
+						<ol>
+							{foreach $favouriteProducts as $product}
+								<li>{$product->name}, {$product->pocet}×</li>
+							{/foreach}
+						</ol>
+					</li>
+					<li>Nejčastěji objednávaná kategorie:
+						<ol>
+							{foreach $favouriteCategories as $category}
+								<li>{$category->name}, {$category->pocet}</li>
+							{/foreach}
+						</ol>
+					</li>
+				</ul>
 		{else}
 			Zákazník zatím nemá žádné objednávky<br />
 		{/if}
@@ -47,6 +46,7 @@
 		Zákazník zatím nemá žádné rezervace<br />
 		{else}
 		Celkem rezervací: {count($bookings)}<br />
+		<a class="btn btn-default" n:href="Bookings:default NULL, $userDetails->id">Uživatelovy rezervace</a><br />
 		{/if}
 		<a n:class="btn, $userDetails->blocked ? btn-success : btn-danger" n:href="People:toggleBlocked $userDetails->id">{if $userDetails->blocked}Odblokovat{else}Zablokovat{/if}</a>
 	{elseif $userDetails->role == 'employee'}
