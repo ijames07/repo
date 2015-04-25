@@ -36,10 +36,10 @@ class Orders extends \Nette\Object {
 	public function getAll(Nette\Utils\Paginator $paginator = null) {
 		if ($paginator == null) {
 			return $this->database->table(self::TABLE_NAME)
-					->order(self::COLUMN_CREATION . ' DESC');
+					->order(self::COLUMN_PICKUP . ' DESC');
 		} else {
 			return $this->database->table(self::TABLE_NAME)
-					->order(self::COLUMN_SOLVED . ' DESC, ' . self::COLUMN_CREATION . ' DESC')
+					->order(self::COLUMN_PICKUP . ' DESC')
 					->limit($paginator->getItemsPerPage(), $paginator->getOffset());	
 		}
 

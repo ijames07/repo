@@ -44,7 +44,7 @@ class SignPresenter extends BasePresenter {
 			$this->redirect("Orders:");
 		}
 	}
-	
+		
 	public function actionDefault() {
 		$this->redirect('Sign:in');
 	}

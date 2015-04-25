@@ -12,6 +12,8 @@
 			<p>{$product->description}</p>
 			<h2>Složení</h2>
 			<p>{$product->ingredients}</p>
+			<h2>~Doba přípravy</h2>
+			<p>{$product->preparation_time} min.</p>
 			<h2>Cena</h2>
 			<p>{number_format($product->price, 2,",",".")} Kč</p>
 			{if $user->isInRole('customer')}

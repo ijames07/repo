@@ -12,6 +12,9 @@ class RegisterPresenter extends BasePresenter {
 
 	protected function startup() {
 		parent::startup();
+		if ($this->getUser()->isLoggedIn()) {
+			$this->redirect('Orders:');
+		}
 	}
 
 	public function renderDefault() {

@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>{ifset #title}{include title|striptags} | {/ifset}Cat café</title>
+	<title>{ifset #title}{include title|striptags} | {/ifset}Café</title>
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/s/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/s/bootstrap/dist/css/bootstrap-theme.css" />
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/custom.css" />
@@ -59,6 +59,13 @@
 	    </nav>
 	</div>
 {include #content|indent:1}
+<div class="container">
+	{if $user->isLoggedIn()}
+	<div class="row">
+		<button onclick="history.go(-1);" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> Zpět</button>
+	</div>
+	{/if}
+</div>
 	<div class="container">
 		<footer class="row">
 			<p><small>&copy;2015 <a href="mailto:xobrtlik@mendelu.cz">Pavel Obrtlík</a> &bull; Všechna práva vyhrazena </small></p>

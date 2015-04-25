@@ -2,18 +2,46 @@
 <div class="container">
 	<h1 n:block="title" class="hidden-xs">{$userDetails->name . ' ' . $userDetails->surname}</h1>
 	<div class="row">
-		<p>Email: {$userDetails->email} <br />
-			Role: {if $userDetails->role == 'employee'}zaměstnanec{elseif $userDetails->role == 'manager'}manažer{else}zákazník{/if}<br />
-			Registrován: {$userDetails->registered|date:'j.n.Y'}<br />
-			Aktivován: {$userDetails->active? 'ano' : 'ne'}<br />
-			Pohlaví: {$userDetails->gender ? 'muž' : 'žena'}<br />
-			Přijímá newsletter: {$userDetails->newsletter ? 'ano' : 'ne'}<br />
-		</p>
-		{if $userDetails->role == 'customer'}
+		<div class="col-xs-12 col-sm-6">
+			<p><strong>Email:</strong> {$userDetails->email} <br />
+				<strong>Role:</strong> {if $userDetails->role == 'employee'}zaměstnanec{elseif $userDetails->role == 'manager'}manažer{else}zákazník{/if}<br />
+				<strong>Registrován:</strong> {$userDetails->registered|date:'j.n.Y'}<br />
+				<strong>Aktivován:</strong> {$userDetails->active? 'ano' : 'ne'}<br />
+				<strong>Pohlaví:</strong> {$userDetails->gender ? 'muž' : 'žena'}<br />
+				<strong>Přijímá newsletter:</strong> {$userDetails->newsletter ? 'ano' : 'ne'}<br />
+				<a n:class="btn, $userDetails->blocked ? btn-success : btn-danger" n:href="People:toggleBlocked $userDetails->id">{if $userDetails->blocked}<span class="glyphicon glyphicon-ok"></span> Odblokovat{else}<span class="glyphicon glyphicon-off"></span> Zablokovat{/if}</a>
+			</p>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			{if $userDetails->role == 'customer'}
+			<ul>
+				<li><strong>Nejčastěji objednávané produkty</strong>
+					<ol>
+						{foreach $favouriteProducts as $product}
+							<li>{$product->name}, {$product->pocet}×</li>
+						{/foreach}
+					</ol>
+				</li>
+				<li><strong>Nejčastěji objednávaná kategorie</strong>
+					<ol>
+						{foreach $favouriteCategories as $category}
+							<li>{$category->name}, {$category->pocet}</li>
+						{/foreach}
+					</ol>
+				</li>
+			</ul>
+			{elseif $userDetails->role == 'employee'}
+				<p>Zaměstnanec obsloužil celkem {count($served)} lidí.</p>
+			{/if}
+		</div>
+	</div>
+	{if $userDetails->role == 'customer'}
+	<div class="row">
+		<div class="col-xs-12 col-sm-6">
 			{if count($picked) + count($opened) + count($prepared) + count($unpicked) + count($cancelled) > 0}
+				<a class="btn btn-default" n:href="Orders:default NULL, $userDetails->id"><span class="glyphicon glyphicon-shopping-cart"></span> Uživatelovy objednávky</a><br />
 				Celkem objednávek: {count($picked) + count($opened) + count($prepared) + count($unpicked) + count($cancelled)}<br />
 				Ratio: <strong>{$ratio}</strong><br />
-				<a class="btn btn-default" n:href="Orders:default NULL, $userDetails->id">Uživatelovy objednávky</a>
 				<h4>Stavy objednávek</h4>
 				<ul>
 					<li>Aktuálně objednáno: {count($opened)}</li>
@@ -23,34 +51,18 @@
 					<li>Zrušené: {count($cancelled)}</li>
 					<li>Nepřipravené: {count($unprepared)}</li>
 				</ul>
-				<ul>
-					<li>Nejčastěji objednávané produkty:
-						<ol>
-							{foreach $favouriteProducts as $product}
-								<li>{$product->name}, {$product->pocet}×</li>
-							{/foreach}
-						</ol>
-					</li>
-					<li>Nejčastěji objednávaná kategorie:
-						<ol>
-							{foreach $favouriteCategories as $category}
-								<li>{$category->name}, {$category->pocet}</li>
-							{/foreach}
-						</ol>
-					</li>
-				</ul>
 		{else}
-			Zákazník zatím nemá žádné objednávky<br />
+			<p>Zákazník zatím nemá žádné objednávky</p>
 		{/if}
+		</div>
+		<div class="col-xs-12 col-sm-6">
 		{if count($bookings) == 0}
-		Zákazník zatím nemá žádné rezervace<br />
+			<p>Zákazník zatím nemá žádné rezervace</p>
 		{else}
-		Celkem rezervací: {count($bookings)}<br />
-		<a class="btn btn-default" n:href="Bookings:default NULL, $userDetails->id">Uživatelovy rezervace</a><br />
+			<a class="btn btn-default" n:href="Bookings:default NULL, $userDetails->id"><span class="glyphicon glyphicon-time"></span> Uživatelovy rezervace</a><br />
+			<strong>Rezervací celkem</strong> {count($bookings)}
 		{/if}
-		<a n:class="btn, $userDetails->blocked ? btn-success : btn-danger" n:href="People:toggleBlocked $userDetails->id">{if $userDetails->blocked}Odblokovat{else}Zablokovat{/if}</a>
-	{elseif $userDetails->role == 'employee'}
-		Zaměstnanec obsloužil celkem {count($served)} lidí.
-	{/if}
+		</div>
 	</div>
+	{/if}
 </div>

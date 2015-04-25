@@ -37,7 +37,7 @@
 					
 					for (var i = 0; i < msg.length; i++) {
 						
-						content += '<div class="radio' + (msg[i].free ? '' : ' disabled') + '"><label><input type="radio" name="tables" value="' + msg[i].id + '" id="' + msg[i].id + '"' + (msg[i].free ? '' : ' disabled') + '>' + msg[i].seats + ' osoby' + (msg[i].smoking ? ', kuřácký':'') + (msg[i].indoor ? '' : ', terasa')  + '</label></div>';				
+						content += '<div class="radio' + (msg[i].free ? '' : ' disabled') + '"><label><input type="radio" name="tables" value="' + msg[i].id + '" id="' + msg[i].id + '"' + (msg[i].free ? '' : ' disabled') + '>' + msg[i].seats + ' osoby' + (msg[i].smoking ? ', kuřácký':'') + (msg[i].indoor ? '' : ', terasa')  + '(' + msg[i].id + ')</label></div>';				
 					}
 					content += '<input class="btn btn-default" type="submit" name="send" value="Zarezervovat" /></div>';
 					$form.append(content);

@@ -45,28 +45,28 @@
 		</div>
 		<table class="table table-striped table-hover">
 			<thead>
-			<tr>
-				<th>Příjmení</th>
-				<th>Jméno</th>
-				<th>Email</th>
-				<th>Zablokován</th>
-				<th>Registrován</th>
-				<th>Ratio</th>
-				<th>Detail</th>
-			<tr>
+				<tr>
+					<th>Příjmení</th>
+					<th>Jméno</th>
+					<th>Email</th>
+					<th>Zablokován</th>
+					<th>Registrován</th>
+					<th>Ratio</th>
+					<th>Detail</th>
+				</tr>
 			</thead>
 			<tbody>
-				{foreach $allUsers as $user}
-					<tr>
-						<td>{$user->surname}</td>
-						<td>{$user->name}</td>
-						<td>{$user->email}</td>
-						<td>{$user->blocked ? 'ano' : 'ne'}</td>
-						<td>{$user->registered|date:'j.n.Y'}</td>
-						<td>{if $user->picked > 0 || $user->left > 0}{$user->picked / ($user->picked + $user->left) |number:2:',':' '}{else}1{/if}</td>
-						<td><a n:href="People:detail $user->id">Detail</a></td>
-					</tr>
-				{/foreach}
+			{foreach $allUsers as $user}
+				<tr>
+					<td>{$user->surname}</td>
+					<td>{$user->name}</td>
+					<td>{$user->email}</td>
+					<td>{$user->blocked ? 'ano' : 'ne'}</td>
+					<td>{$user->registered|date:'j.n.Y'}</td>
+					<td>{if $user->picked > 0 || $user->left > 0}{$user->picked / ($user->picked + $user->left) |number:2:',':' '}{else}1{/if}</td>
+					<td><a n:href="People:detail $user->id" class="btn btn-default"><span class="glyphicon glyphicon-info-sign"></span> Detail</a></td>
+				</tr>
+			{/foreach}
 			</tbody>
 		</table>
 		<nav style="text-align:center;">

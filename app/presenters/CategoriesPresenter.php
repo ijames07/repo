@@ -56,6 +56,7 @@ class CategoriesPresenter extends BasePresenter {
 			$products[$row->id] = $row->name;
 		}
 		$this["categoryForm"]["products"]->setItems($products);
+		$this["categoryForm"]->addSubmit('send', 'Přidat kategorii');
 	}
 	
 	public function actionEdit($id = 0) {
@@ -85,6 +86,7 @@ class CategoriesPresenter extends BasePresenter {
 		));
 		$this["categoryForm"]->setDefaults(['products' => $current]);
 		$this["categoryForm"]->addHidden('category_id', $id);
+		$this["categoryForm"]->addSubmit('send', 'Upravit kategorii');
 	}
 	
 	protected function createComponentCategoryForm() {
@@ -93,7 +95,6 @@ class CategoriesPresenter extends BasePresenter {
 		$form->addText('name', 'Název kategorie')
 				->addRule(Form::FILLED, 'Zadejte prosím název přidávané kategorie');
 		$form->addCheckboxList('products', 'Produkty patřící k této kategorii');
-		$form->addSubmit('send');
 		$form->onSuccess[] = callback($this, 'categoryFormSubmitted');
 		return $form;
 	}

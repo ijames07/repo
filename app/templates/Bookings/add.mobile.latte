@@ -43,7 +43,7 @@
 						})
 				.done(function(msg) {
 					$('#form').empty();
-					var form = '<form method="post" id="tables" action="' + {link Bookings:book} + '"><input type="hidden" name="time" value="' + timestamp + '">';
+					var form = '<form method="post" id="tables" action=' + {link Bookings:book} + '><input type="hidden" name="time" value="' + timestamp + '">';
 					form += '<fieldset data-role="controlgroup"><legend>Výběr stolu</legend>';
 					
 					for (var i = 0; i < msg.length; i++) {

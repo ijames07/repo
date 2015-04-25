@@ -99,6 +99,14 @@ $container->router[] = new Route('objednavky/[<id>]', array(
 	'presenter' => 'Orders',
 	'action' => 'default'
 ));
+$container->router[] = new Route('prihlasit', array(
+	'presenter'	=> 'Sign',
+	'action'	=> 'in'
+));
+$container->router[] = new Route('registrovat', array(
+	'presenter'	=> 'Register',
+	'action'	=> 'default'
+));
 $container->router[] = new Route('<presenter>/<action>[/<id>]', 'Homepage:default');
 $container->router[] = new Route('<presenter>/<action>/<id>', 'Homepage:default');
 

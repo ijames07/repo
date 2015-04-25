@@ -23,7 +23,7 @@
 						<div class="thumbnail col-xs-12">
 							<div class="col-xs-6">
 							<p>Dne: {$booking->time|date:'j.n.Y G'} hod<br />
-								Stůl: <a href="#" data-toggle="tooltip" title="Míst: {$booking->ref('desk_id')->seats}, {$booking->ref('desk_id')->smoking ? 'kuřácký' : 'nekuřácký'}, {$booking->ref('desk_id')->indoor ? 'vnitřní' : 'venkovní'}">{$booking->desk_id}</a></p>
+								Stůl: <a href="#" data-toggle="tooltip" data-placement="bottom" title="Míst: {$booking->ref('desk_id')->seats}, {$booking->ref('desk_id')->smoking ? 'kuřácký' : 'nekuřácký'}, {$booking->ref('desk_id')->indoor ? 'vnitřní' : 'venkovní'}">{$booking->desk_id}</a></p>
 							</div>
 							<div class="col-xs-3 col-xs-offset-3">
 								<button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#{$booking->id}">Stornovat</button>
@@ -63,7 +63,7 @@
 						{foreach $previousBookings as $booking}
 							<div class="thumbnail">
 								<p>Dne: {$booking->time|date:'j.n.Y G'} hod<br />
-								Stůl: <a href="#" data-toggle="tooltip" title="Míst: {$booking->ref('desk_id')->seats}, {$booking->ref('desk_id')->smoking ? 'kuřácký' : 'nekuřácký'}, {$booking->ref('desk_id')->indoor ? 'vnitřní' : 'venkovní'}">{$booking->desk_id}</a></p>	
+								Stůl: <a href="#" data-placement="bottom" data-toggle="tooltip" title="Míst: {$booking->ref('desk_id')->seats}, {$booking->ref('desk_id')->smoking ? 'kuřácký' : 'nekuřácký'}, {$booking->ref('desk_id')->indoor ? 'vnitřní' : 'venkovní'}">{$booking->desk_id}</a></p>	
 							</div>
 						{/foreach}
 					</div>

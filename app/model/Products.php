@@ -60,6 +60,14 @@ class Products extends \Nette\Object {
 		));
 	}
 	
+	/** @return Nette\Database\Table\ActiveRow */
+	public function get($id) {
+		if (empty($id)) {
+			return;
+		}
+		return $this->database->table(self::TABLE_NAME)->get($id);
+	}
+	
 	/** @return int */
 	public function removeCategoryFromProduct($product_id, $category_id) {
 		return $this->database->table(self::TABLE_CAT_PROD)

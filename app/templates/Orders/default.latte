@@ -5,17 +5,21 @@
 		<div class="row">
 			<table class="table table-striped table-hover">
 				<thead>
-					<th>Čas vytvoření</th>
-					<th>Produkt</th>
-					<th>Zákazník</th>
-					<th>Dokončeno</th>
-					<th>Obsloužil</th>
-					<th>Stav</th>
-					<th></th>
+					<tr>
+						<th>Čas vyzvednutí</th>
+						<th>Čas vytvoření</th>
+						<th>Produkt</th>
+						<th>Zákazník</th>
+						<th>Dokončeno</th>
+						<th>Obsloužil</th>
+						<th>Stav</th>
+						<th></th>
+					</tr>
 				</thead>
 				<tbody>
 					{foreach $orders as $order}
 						<tr>
+							<td>{$order->pickup_time|date:'j.n.Y G:i'}</td>
 							<td>{$order->creation_date|date:'j.n.Y G:i'}</td>
 							<td>{$order->ref('product_id')->name}</td>
 							<td><a href="{link People:detail $order->customer_id}">{$order->ref('customer_id')->email}</a></td>
@@ -42,19 +46,19 @@
 			{if !empty($paginator)}
 				<nav style="text-align:center;">
 					<ul class="pagination">
-						{if !$presenter->getParameter('id') == NULL}
+						{if !$presenter->getParameter('page') == NULL}
 						<li>
-							<a n:href="Orders:default ($presenter->getParameter('id') - 1)" aria-label="Předchozí">
+							<a n:href="Orders:default ($presenter->getParameter('page') - 1)" aria-label="Předchozí">
 								<span aria-hidden="true">&laquo;</span>
 							</a>
 						</li>
 						{/if}
 						{for $i = 1; $i <= $paginator->getLastPage(); $i++}
-							<li n:class="$presenter->getParameter('id') == $i ? active, $presenter->getParameter('id') == NULL && $i == 1 ? active"><a n:href="Orders:default $i">{$i}</a></li>
+							<li n:class="$presenter->getParameter('page') == $i ? active, $presenter->getParameter('page') == NULL && $i == 1 ? active"><a n:href="Orders:default $i">{$i}</a></li>
 						{/for}
-						{if !($presenter->getParameter('id') == $paginator->getLastPage())}
+						{if !($presenter->getParameter('page') == $paginator->getLastPage())}
 						<li>
-							<a n:href="Orders:default ($presenter->getParameter('id') != NULL ? ($presenter->getParameter('id') + 1) : 2)" aria-label="Další">
+							<a n:href="Orders:default ($presenter->getParameter('page') != NULL ? ($presenter->getParameter('page') + 1) : 2)" aria-label="Další">
 								<span aria-hidden="true">&raquo;</span>
 							</a>
 						</li>

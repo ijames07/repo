@@ -34,7 +34,7 @@ class OrdersPresenter extends BasePresenter {
 			} else {
 				$paginator = new Nette\Utils\Paginator;
 				$paginator->setItemsPerPage(15); // počet položek na stránce
-				$paginator->setItemCount(count($orders->getAll())); // celkový počet rezervací
+				$paginator->setItemCount(count($orders->getAll())); // celkový počet objednávek
 				$paginator->setPage($page); // číslo aktuální stránky, číslováno od 1
 				$this->template->orders = $orders->getAll($paginator);
 				$this->template->paginator = $paginator;

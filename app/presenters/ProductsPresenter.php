@@ -103,6 +103,16 @@ class ProductsPresenter extends BasePresenter {
 			$this->flashMessage('Váš účet byl zablokován z důvodu nevyzvedávání produktů. Pro další info kontaktujte zaměstnance.', 'error');
 			$this->redirect('Orders:');
 		}
+		$time = strtotime($values["time"]);
+		$product = $this->context->getService('productsService')->get($values["id"]);
+		if ($product == false) {
+			$this->flashMessage('Neznámý produkt', 'error');
+			$this->redirect('Products:');
+		}
+		if ($time  < strtotime('now') + $product->preparation_time * 60) {
+			$this->flashMessage('Na tento čas nelze připravit produkt', 'error');
+			$this->redirect('Products:');
+		}
 		$inserted = $this->context->ordersService->insertOrder(
 				$this->getUser()->getId(),
 				$values["id"],
@@ -202,6 +212,7 @@ class ProductsPresenter extends BasePresenter {
 		}
 		$this["productForm"]["categories"]->setItems($categories);
 		$this["productForm"]["img"]->setRequired();
+		$this["productForm"]->addSubmit('send', 'Přidat produkt');
 	}
 	
 	protected function createComponentProductForm() {
