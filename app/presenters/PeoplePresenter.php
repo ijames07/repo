@@ -126,7 +126,12 @@ class PeoplePresenter extends BasePresenter {
 	public function employeeFormSuccess(Form $form) {
 		$values = $form->getValues();
 		if ($this->getUser()->isInRole('manager')) {
-			$result = $this->context->usersService->changePermission($values);
+			if ($values->employee == $this->getUser()->getId()) {
+				$this->flashMessage('Nelze změnit oprávnění sám sobě!', 'error');
+				$this->redirect('People:');
+			} else {
+				$result = $this->context->usersService->changePermission($values);
+			}
 			if ($result == 1) {
 				$this->flashMessage('Oprávnění změněno', 'success');
 			} else {

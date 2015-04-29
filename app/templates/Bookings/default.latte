@@ -86,7 +86,7 @@
 				{foreach $bookings as $booking}
 				<tr>
 					<td>{$booking->time|date:'j.n.Y G:i'}</td>
-					<td><a n:href="People:detail $booking->customer_id">{$booking->ref('customer_id')->name . ' ' . $booking->ref('customer_id')->surname}</a></td>
+					<td>{if $booking->ref('customer_id')->role != 'employee'}<a n:href="People:detail $booking->customer_id">{$booking->ref('customer_id')->name . ' ' . $booking->ref('customer_id')->surname}</a>{/if}</td>
 					<td><button data-toggle="tooltip" title="Míst: {$booking->ref('desk_id')->seats}, {$booking->ref('desk_id')->smoking ? 'kuřácký' : 'nekuřácký'}, {$booking->ref('desk_id')->indoor ? 'vnitřní' : 'venkovní'}">{$booking->desk_id}</button></td>
 					<td>{if $booking->time > new Nette\Utils\Datetime()}<a n:href="Bookings:cancel $booking->id">Zrušit</a>{/if}</td>
 				</tr>
@@ -121,7 +121,7 @@
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr>
-					<th>Čas</th>
+					<th>Hodina</th>
 					<th>Stůl</th>
 					<th>Zákazník</th>
 					<th></th>
@@ -130,7 +130,7 @@
 			<tbody>
 				{foreach $bookings as $booking}
 				<tr>
-					<td>{$booking->time|date:'j.n.Y G:i'}</td>
+					<td>{$booking->time|date:'G:i'}</td>
 					<td><button data-toggle="tooltip" title="Míst: {$booking->ref('desk_id')->seats}, {$booking->ref('desk_id')->smoking ? 'kuřácký' : 'nekuřácký'}, {$booking->ref('desk_id')->indoor ? 'vnitřní' : 'venkovní'}">{$booking->desk_id}</button></td>
 					<td>{if $booking->ref('customer_id')->role != 'employee'}<a class="btn btn-info btn-sm" n:href="People:detail $booking->customer_id">{$booking->ref('customer_id')->name . ' ' . $booking->ref('customer_id')->surname}</a>{/if}</td>
 					<td>{if !$booking->finished}<a class="btn btn-success" n:href="Bookings:finish $booking->id">Dokončit</a>{/if}</td>

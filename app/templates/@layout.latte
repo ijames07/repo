@@ -3,12 +3,12 @@
 <head>
 	<meta charset="utf-8">
 	<title>{ifset #title}{include title|striptags} | {/ifset}Café</title>
-	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/s/bootstrap/dist/css/bootstrap.min.css" />
-	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/s/bootstrap/dist/css/bootstrap-theme.css" />
+	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/bower_components/bootstrap/dist/css/bootstrap-theme.css" />
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/custom.css" />
-	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/s/toastr/toastr.min.css" />
-	<link rel="stylesheet" href="{$basePath}/s/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
-	<script src="{$basePath}/s/respond-minmax/dest/respond.min.js"></script>
+	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/bower_components/toastr/toastr.min.css" />
+	<link rel="stylesheet" href="{$basePath}/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+	<script src="{$basePath}/bower_components/respond-minmax/dest/respond.min.js"></script>
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	{block head}{/block}
@@ -75,13 +75,13 @@
 	</div>
 
 <!-- javascript -->
-	<script src="{$basePath}/s/nette-forms/src/assets/netteForms.js"></script>
-    <script src="{$basePath}/s/jquery/dist/jquery.min.js"></script>
-	<script src="{$basePath}/s/moment/min/moment.min.js"></script>
-	<script src="{$basePath}/s/moment/locale/cs.js"></script>
-	<script src="{$basePath}/s/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="{$basePath}/s/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-	<script src="{$basePath}/s/toastr/toastr.min.js"></script>
+	<script src="{$basePath}/bower_components/nette-forms/src/assets/netteForms.js"></script>
+    <script src="{$basePath}/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="{$basePath}/bower_components/moment/min/moment.min.js"></script>
+	<script src="{$basePath}/bower_components/moment/locale/cs.js"></script>
+	<script src="{$basePath}/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="{$basePath}/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="{$basePath}/bower_components/toastr/toastr.min.js"></script>
 	{if !empty($flashes)}
 		<script>
 		{foreach $flashes as $flash}

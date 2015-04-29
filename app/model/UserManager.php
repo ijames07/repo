@@ -116,7 +116,7 @@ class UserManager extends Nette\Object implements Nette\Security\IAuthenticator 
 		return $this->database->table(self::TABLE_NAME)
 				->where(self::COLUMN_ID, intval($data->employee))
 				->update(array(
-					self::COLUMN_ROLE => $data->role == 1 ? 'manager' : ($data->role == 0? 'employee' : 'customer')
+					self::COLUMN_ROLE => $data->role == 1 ? 'manager' : ($data->role == 0 ? 'employee' : 'customer')
 				));
 	}
 	

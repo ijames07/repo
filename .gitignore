@@ -11,4 +11,4 @@ nbproject/*
 !web.config
 app/config/config.local.neon
 /www/images/products/
-/www/s
+/www/bower_components
