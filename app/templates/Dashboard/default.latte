@@ -1,0 +1,57 @@
+{block content}
+<div class="container">
+	<div class="row">
+		<h3>Oblíbené</h3>
+		<div class="col-xs-12 col-sm-6">
+			 <h4>Produkty</h4>
+			<ol>
+			{foreach $popularProducts as $product}
+				<li>{$product->name} {$product->prodano}</li>
+			{/foreach}
+			</ol>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<h4>Stoly</h4>
+			<ol>
+			{foreach $popularDesks as $desk}
+				<li>Stůl {$desk->id}: {$desk->rezervovano}</li>
+			{/foreach}
+			</ol>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-6">
+			<h4>Rezervované stoly dle kuřáctví</h4>
+			<ol>
+			{foreach $smokingTF as $group}
+				<li>{if $group->smoking}Kuřácké{else}Nekuřácké{/if} {$group->pocet}</li>
+			{/foreach}
+			</ol>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<ol>
+
+			</ol>
+		</div>
+	</div>
+	<div class="row">
+		<h3>Nejoblíbenější produkty dle pohlaví</h3>
+		<div class="col-xs-12 col-sm-6">
+			<h4>Ženy</h4>
+			<ol>
+			{foreach $productsF as $product}
+				<li>{$product->name} {$product->pocet}</li>
+			{/foreach}
+			</ol>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<h4>Muži</h4>
+			<ol>
+			{foreach $productsM as $product}
+				<li>{$product->name} {$product->pocet}</li>
+			{/foreach}
+			</ol>
+		</div>
+	</div>
+</div>
+{/block}

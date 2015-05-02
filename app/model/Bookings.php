@@ -20,6 +20,20 @@ class Bookings extends \Nette\Object {
 		$this->database = $database;
 	}
 	
+	/** @return Nette\Database\ResultSet */
+	public function getPopularDesks() {
+		return $this->database->query('	SELECT `desk`.`id`, `desk`.`seats`, `desk`.`smoking`, `desk`.`indoor`, count(*) AS rezervovano FROM `booking`
+										JOIN `desk` ON (`desk`.`id` = `booking`.`desk_id`)
+										GROUP BY `desk`.`id` ORDER BY `rezervovano` DESC
+										LIMIT 10');
+	}
+	
+	public function getPopularDeskType() {
+		return $this->database->query('	SELECT `desk`.`smoking`, count(*) AS pocet FROM `booking`
+										JOIN `desk` ON (`desk`.`id` = `booking`.`desk_id`)
+										GROUP BY `desk`.`smoking` ORDER BY `pocet` DESC');
+	}
+	
 	/** @return Nette\Database\Table\ActiveRow */
 	public function add($user, $table_id, $time) {
 		if (empty($user) || empty($table_id) || empty($time)) {

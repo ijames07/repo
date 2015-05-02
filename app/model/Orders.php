@@ -205,6 +205,34 @@ class Orders extends \Nette\Object {
 	}
 	
 	/** @return Nette\Database\ResultSet */
+	public function getPopularProducts() {
+		return $this->database->query('	SELECT `product`.`name`, count(*) AS prodano FROM `order`
+										JOIN `product` ON (`product`.`id` = `order`.`product_id`)
+										GROUP BY `product`.`name` ORDER BY `prodano` DESC
+										LIMIT 10');
+	}
+	
+	/** @return Nette\Database\ResultSet */
+	public function getMalePopularProducts() {
+		return $this->database->query("	SELECT `product`.`name`, count(*) AS pocet FROM `order`
+										JOIN `product` ON (`product`.`id` = `order`.`product_id`)
+										JOIN `user` ON (`user`.`id` = `order`.`customer_id`)
+										WHERE `user`.`gender` = '1'
+										GROUP BY `product`.`name` ORDER BY `pocet` DESC
+										LIMIT 10");
+	}
+	
+	/** @return Nette\Database\ResultSet */
+	public function getFemalePopularProducts() {
+		return $this->database->query("	SELECT `product`.`name`, count(*) AS pocet FROM `order`
+										JOIN `product` ON (`product`.`id` = `order`.`product_id`)
+										JOIN `user` ON (`user`.`id` = `order`.`customer_id`)
+										WHERE `user`.`gender` = '0'
+										GROUP BY `product`.`name` ORDER BY `pocet` DESC
+										LIMIT 10");
+	}
+	
+	/** @return Nette\Database\ResultSet */
 	public function getMostOrderedProduct($user) {
 		if (empty($user)) {
 			// nejcasteji objednavane produkty

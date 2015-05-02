@@ -30,6 +30,9 @@
 		<div class="collapse navbar-collapse" id="collapse"> 
 		    <ul class="nav navbar-nav">
 				{if $user->loggedIn}
+					{if $user->isInRole('manager')}
+					<li n:class="$presenter->isLinkCurrent('Dashboard:*') ? active, navbar-left"><a href="{plink Dashboard:}">Dashboard</a></li>
+					{/if}
 					{if !$user->isInRole('employee')}
 					<li n:class="$presenter->isLinkCurrent('Categories:*') ? active, $presenter->isLinkCurrent('Products:default') && !empty($presenter->getParameter('cat')) ? active, dropdown, navbar-left">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Kategorie<span class="caret"></span></a>

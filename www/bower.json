@@ -24,6 +24,7 @@
     "toastr": "~2.1.0",
     "eonasdan-bootstrap-datetimepicker": "4.7.14",
     "jquery-mobile-bower": "~1.4.5",
-    "nette-forms": "~2.3.1"
+    "nette-forms": "~2.3.1",
+	"moment": "~2.10.2"
   }
 }
