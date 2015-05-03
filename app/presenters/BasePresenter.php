@@ -21,8 +21,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
      * @return bool
      */
     public function isAjax() {
-        if (($this->mobileDetect->isMobile() && $this->getUser()->isInRole('customer'))
-				|| ($this->mobileDetect->isMobile() && $this->getUser()->isInRole('guest'))) {
+        if (($this->mobileDetect->isPhone() && $this->getUser()->isInRole('customer'))
+				|| ($this->mobileDetect->isPhone() && $this->getUser()->isInRole('guest'))) {
 			return false;
 		} else {
 			return parent::isAjax();
@@ -51,8 +51,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	
 	protected function beforeRender() {
 		// pracovni slozka je app/templates/
-		if (($this->mobileDetect->isMobile() && $this->getUser()->isInRole('customer'))
-				|| ($this->mobileDetect->isMobile() && $this->getUser()->isInRole('guest'))) { // if mobile, set mobile templates
+		if (($this->mobileDetect->isPhone() && $this->getUser()->isInRole('customer'))
+				|| ($this->mobileDetect->isPhone() && $this->getUser()->isInRole('guest'))) { // if mobile, set mobile templates
 			$this->setView($this->getView() . '.mobile');
 			$this->setLayout('layout.mobile');
 		} else {

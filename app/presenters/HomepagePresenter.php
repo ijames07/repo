@@ -11,7 +11,9 @@ use Nette,
 class HomepagePresenter extends BasePresenter {
 
 	public function actionDefault() {
-		
+		if ($this->mobileDetect->isMobile()) {
+			$this->redirect('Sign:in');
+		}
 	}
 
 }
