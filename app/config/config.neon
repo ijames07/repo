@@ -33,7 +33,7 @@ services:
 	- App\Model\Products
 	- App\Model\Orders
 	- App\Model\Categories
-	- App\RouterFactory
+	#- App\RouterFactory
 	ordersService: App\Model\Orders(@database.default.context)
 	usersService: App\Model\UserManager(@database.default.context)
 	desksService: App\Model\Desks(@database.default.context)
