@@ -9,6 +9,5 @@ nbproject/*
 !.gitignore
 !.htaccess
 !web.config
-app/config/config.local.neon
 /www/images/products/
 /www/bower_components
